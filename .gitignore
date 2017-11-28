@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# JetBrains
+.idea/
+
+# database
+db.sqlite3
