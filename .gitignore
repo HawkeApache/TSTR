@@ -103,5 +103,4 @@ ENV/
 # JetBrains
 .idea/
 
-# database
-db.sqlite3
+tstr/tstr_app/migrations/
