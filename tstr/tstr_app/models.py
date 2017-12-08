@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-# todo abstract question!!!!!!111ONEONEONE
+# todo abstract question!!!!!!
 class OpenQuestion(models.Model):
     question_text = models.TextField()
     correct_answer = models.TextField()
