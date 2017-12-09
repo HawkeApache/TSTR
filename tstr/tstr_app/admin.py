@@ -3,13 +3,31 @@ from django.contrib import admin
 # Register your models here.
 from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
 
-admin.site.register(Student)
-admin.site.register(OpenQuestion)
-admin.site.register(Test)
-admin.site.register(Group)
-admin.site.register(ClosedQuestion)
-admin.site.register(Answer)
-admin.site.register(WrapWordQuestion)
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ('index', 'first_name', 'last_name')
 
 
+@admin.register(OpenQuestion)
+class OpenQuestionAdmin(admin.ModelAdmin):
+    list_display = ('question_text',)
 
+
+@admin.register(Test)
+class TestAdmin(admin.ModelAdmin):
+    list_display = ('test_name',)
+
+
+@admin.register(Group)
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+@admin.register(ClosedQuestion)
+class ClosedQuestionAdmin(admin.ModelAdmin):
+    list_display = ('question_text',)
+
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('id',)
