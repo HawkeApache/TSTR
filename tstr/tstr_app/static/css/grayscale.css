@@ -344,3 +344,20 @@ body {
 .banner-social-buttons {
   margin-top: 3%;
 }
+
+#menu-options {
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.menu-description {
+  margin-top: 15px;
+}
+
+.menu-option {
+  padding: 30px;
+}
+
+.menu-option  h2 {
+  margin: auto;
+}

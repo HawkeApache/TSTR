@@ -4,5 +4,8 @@ from tstr.tstr_app.models import Student
 
 
 def index(request):
-    return render(request, "index.html", {})
+    return render(request, "landing_page.html", {})
 
+
+def menu(request):
+    return render(request, "menu.html", {})
