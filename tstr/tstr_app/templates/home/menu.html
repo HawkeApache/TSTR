@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <!-- Menu Section -->
+    <section id="menu" class="container content-section text-center">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="brand-heading">Cześć, co chcesz zrobić?</h1>
+            </div>
+        </div>
+        <div class="row" id="menu-options">
+            <div class="col-lg-4">
+                <a href="" class="btn btn-default btn-lg menu-option">
+                    <span class="network-name">
+                        <h2>Rozwiąż <br> kolokwium</h2>
+                    </span>
+                </a>
+                <p class="menu-description">Ucz się rozwiązując <br> aktywne kolokwia. </p>
+            </div>
+            <div class="col-lg-4">
+                <a href="" class="btn btn-default btn-lg menu-option">
+                    <span class="network-name"><h2>Przeglądaj <br> zakończone</h2></span></a>
+                <p class="menu-description">Sprawdź prawidłowe odpowiedzi, <br>swoje oceny i wyniki. </p>
+
+            </div>
+            <div class="col-lg-4">
+                <a href="" class="btn btn-default btn-lg menu-option">
+                    <span class="network-name"><h2>Sprawdź <br> ustawienia</h2></span></a>
+
+                <p class="menu-description">Zmień swoje hasło <br> i sprawdź dane osobowe. </p>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
