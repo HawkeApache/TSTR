@@ -17,10 +17,10 @@ class OpenQuestion(Question):
 
 class ClosedQuestion(Question):
     answers = models.TextField(
-        help_text="Please insert answers separated by comma e.g.: answer1, answer")    #Todo lista mozliwych odpowiedzi
+        help_text="Please insert answers separated by comma e.g.: answer1, answer")
     correct_answer = models.CharField(
         max_length=255,
-        help_text="Please insert correct_answers separeted by comma as integers e.g.: 0,2") #todo kurwa lista poprawnych odpoweidzi
+        help_text="Please insert correct_answers separeted by comma as integers e.g.: 0,2")
     #todo add validator to check if field is python list
 
 

@@ -18,8 +18,9 @@ from django.contrib import admin
 from tstr.tstr_app import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.index, name='landing_page'),
     url(r'^questions', views.questions, name='questions'),
     url(r'^question/(?P<question_id>\d+)', views.question, name='question'),
+    url(r'menu', views.menu, name='menu'),
     url(r'^admin/', admin.site.urls),
 ]

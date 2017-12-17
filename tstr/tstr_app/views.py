@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 import django.db.models
 from tstr.tstr_app.models import Student
@@ -7,7 +6,7 @@ from django.shortcuts import get_object_or_404
 
 
 def index(request):
-    return render(request, "index.html", {})
+    return render(request, "home/landing_page.html", {})
 
 
 def questions(request):
@@ -21,3 +20,7 @@ def question(request, question_id):
     answers_set = q.answers.split(",")
     correct = q.correct_answer.split(",")
     return render(request, "home/question.html", {"question": answers_set, "correct": correct})
+
+
+def menu(request):
+    return render(request, "home/menu.html", {})
