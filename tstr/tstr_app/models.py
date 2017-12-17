@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Question(models.Model):
     question_text = models.TextField()
+    difficulty = models.IntegerField(default=10, validators=[MaxValueValidator(10), MinValueValidator(1)])
 
     def __str__(self):
         return self.question_text
@@ -12,7 +13,6 @@ class Question(models.Model):
 
 class OpenQuestion(Question):
     correct_answer = models.TextField()
-    difficulty = models.IntegerField(default=10, validators=[MaxValueValidator(10), MinValueValidator(1)])
 
 
 class ClosedQuestion(Question):
@@ -34,6 +34,8 @@ class Test(models.Model):
     open_questions = models.ManyToManyField(OpenQuestion)
     closed_questions = models.ManyToManyField(ClosedQuestion)
     wrap_word_question = models.ManyToManyField(WrapWordQuestion)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
 
     def __str__(self):
         return self.test_name
@@ -63,3 +65,4 @@ class Answer(models.Model):
     question = models.ManyToManyField(Question)
     answer = models.IntegerField()
     position_in_test = models.IntegerField()
+    time_of_answer = models.DateTimeField()
