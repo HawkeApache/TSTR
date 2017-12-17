@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>question</title>
+</head>
+<body>
+    <div>
+        {% for e in question %}
+            <h1>
+                {{ e }}
+            </h1>
+        {% endfor %}
+
+        <div>poprawne opdowiedzi</div>
+        {% for e in correct %}
+            <h1>
+                {{ e }}
+            </h1>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

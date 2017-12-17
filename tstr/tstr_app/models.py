@@ -3,9 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
-
-
 class Question(models.Model):
     question_text = models.TextField()
 
@@ -19,11 +16,12 @@ class OpenQuestion(Question):
 
 
 class ClosedQuestion(Question):
-    answer1 = models.TextField()    #Todo lista mozliwych odpowiedzi
-    answer2 = models.TextField()
-    answer3 = models.TextField()
-    answer4 = models.TextField()
-    correct_answer = models.CharField(max_length=255) #todo kurwa lista poprawnych odpoweidzi
+    answers = models.TextField(
+        help_text="Please insert answers separated by comma e.g.: answer1, answer")    #Todo lista mozliwych odpowiedzi
+    correct_answer = models.CharField(
+        max_length=255,
+        help_text="Please insert correct_answers separeted by comma as integers e.g.: 0,2") #todo kurwa lista poprawnych odpoweidzi
+    #todo add validator to check if field is python list
 
 
 class WrapWordQuestion(Question):
@@ -33,7 +31,9 @@ class WrapWordQuestion(Question):
 
 class Test(models.Model):
     test_name = models.CharField(max_length=255)
-    questions = models.ManyToManyField(Question)
+    open_questions = models.ManyToManyField(OpenQuestion)
+    closed_questions = models.ManyToManyField(ClosedQuestion)
+    wrap_word_question = models.ManyToManyField(WrapWordQuestion)
 
     def __str__(self):
         return self.test_name
@@ -54,7 +54,6 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 # todo czy na pewno takie relacje??
