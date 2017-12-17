@@ -16,7 +16,7 @@ class OpenQuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
-    list_display = ('test_name',)
+    list_display = ('test_name', 'start_time', 'end_time')
 
 
 @admin.register(Group)
@@ -27,6 +27,11 @@ class GroupAdmin(admin.ModelAdmin):
 @admin.register(ClosedQuestion)
 class ClosedQuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'question_text',)
+
+
+@admin.register(WrapWordQuestion)
+class WrapWordQuestionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'question_text')
 
 
 @admin.register(Answer)

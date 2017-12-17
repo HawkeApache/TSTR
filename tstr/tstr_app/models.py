@@ -17,15 +17,14 @@ class OpenQuestion(Question):
 
 class ClosedQuestion(Question):
     answers = models.TextField(
-        help_text="Please insert answers separated by comma e.g.: answer1, answer")
+        help_text="Please insert answers separated by & e.g.: answer1 & answer")
     correct_answer = models.CharField(
         max_length=255,
-        help_text="Please insert correct_answers separeted by comma as integers e.g.: 0,2")
-    #todo add validator to check if field is python list
+        help_text="Please insert correct answer(s) as integers separated by comma e.g.: 0, 2")
 
 
 class WrapWordQuestion(Question):
-    #todo inteligiente zostawianie miejsca
+    # todo inteligiente zostawianie miejsca
     correct_answer = models.CharField(max_length=255)
 
 
@@ -60,7 +59,7 @@ class Group(models.Model):
 
 # todo czy na pewno takie relacje??
 class Answer(models.Model):
-    student = models.ManyToManyField(Student)
+    student = models.ManyToManyField(Student) # ???
     test = models.ManyToManyField(Test)
     question = models.ManyToManyField(Question)
     answer = models.IntegerField()
