@@ -3,11 +3,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
-
-
 class Question(models.Model):
     question_text = models.TextField()
+    difficulty = models.IntegerField(default=10, validators=[MaxValueValidator(10), MinValueValidator(1)])
 
     def __str__(self):
         return self.question_text
@@ -15,25 +13,28 @@ class Question(models.Model):
 
 class OpenQuestion(Question):
     correct_answer = models.TextField()
-    difficulty = models.IntegerField(default=10, validators=[MaxValueValidator(10), MinValueValidator(1)])
 
 
 class ClosedQuestion(Question):
-    answer1 = models.TextField()    #Todo lista mozliwych odpowiedzi
-    answer2 = models.TextField()
-    answer3 = models.TextField()
-    answer4 = models.TextField()
-    correct_answer = models.CharField(max_length=255) #todo kurwa lista poprawnych odpoweidzi
+    answers = models.TextField(
+        help_text="Please insert answers separated by & e.g.: answer1 & answer")
+    correct_answer = models.CharField(
+        max_length=255,
+        help_text="Please insert correct answer(s) as integers separated by comma e.g.: 0, 2")
 
 
 class WrapWordQuestion(Question):
-    #todo inteligiente zostawianie miejsca
+    # todo inteligiente zostawianie miejsca
     correct_answer = models.CharField(max_length=255)
 
 
 class Test(models.Model):
     test_name = models.CharField(max_length=255)
-    questions = models.ManyToManyField(Question)
+    open_questions = models.ManyToManyField(OpenQuestion)
+    closed_questions = models.ManyToManyField(ClosedQuestion)
+    wrap_word_question = models.ManyToManyField(WrapWordQuestion)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
 
     def __str__(self):
         return self.test_name
@@ -56,11 +57,11 @@ class Group(models.Model):
         return self.name
 
 
-
 # todo czy na pewno takie relacje??
 class Answer(models.Model):
-    student = models.ManyToManyField(Student)
+    student = models.ManyToManyField(Student) # ???
     test = models.ManyToManyField(Test)
     question = models.ManyToManyField(Question)
     answer = models.IntegerField()
     position_in_test = models.IntegerField()
+    time_of_answer = models.DateTimeField()
