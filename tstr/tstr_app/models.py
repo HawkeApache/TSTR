@@ -42,11 +42,13 @@ class Test(models.Model):
 
 class Student(User):
     is_active_USOS = models.BooleanField(default=True)
-    index = models.CharField(max_length=7, unique=True)
+    indeks = models.CharField(max_length=7, unique=True)
 
     def __str__(self):
-        return self.index
+        return self.indeks
 
+    def __unicode__(self):
+        return self.indeks
 
 class Group(models.Model):
     name = models.CharField(max_length=255)

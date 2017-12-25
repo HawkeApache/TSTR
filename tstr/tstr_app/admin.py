@@ -1,12 +1,18 @@
+from __future__ import with_statement
+
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
+from .resources import StudentResource
 
 
 @admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
-    list_display = ('index', 'first_name', 'last_name')
+class StudentAdmin(ImportExportModelAdmin):
+    resource_class = StudentResource
+    list_display = ('indeks', 'first_name', 'last_name')
+    from_encoding = 'utf-8'
 
 
 @admin.register(OpenQuestion)

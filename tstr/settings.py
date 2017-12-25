@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tstr.tstr_app',
-    'tstr'
+    'tstr',
+    'import_export'
 ]
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,7 +81,7 @@ WSGI_APPLICATION = 'tstr.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tstr',
+        'NAME': 'new_new_tstr',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
