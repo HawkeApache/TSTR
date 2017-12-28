@@ -1,5 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import string
 
+from django.http import HttpResponse
 from import_export import resources
 from .models import Student
 from import_export.fields import Field
@@ -13,14 +17,6 @@ class StudentResource(resources.ModelResource):
     indeks = Field(column_name='indeks', attribute='indeks')
     password = Field(column_name='password', attribute='password')
     username = Field(column_name='username', attribute='username')
-
-
-    def import_data(self, dataset, dry_run=False, raise_errors=False,
-                    use_transactions=None, collect_failed_rows=False, **kwargs):
-        print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-
-    def before_import_row(self, row, **kwargs):
-        print("--------------------------")
 
     def before_import(self, dataset, using_transactions, dry_run=False, **kwargs):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11")
@@ -48,6 +44,7 @@ class StudentResource(resources.ModelResource):
             student.save()
 
         return super(StudentResource, self).before_import(dataset, using_transactions, dry_run, **kwargs)
+
 
     class Meta:
         fields = ('indeks', 'is_active_USOS', 'nazwisko', 'imie', 'skreslony', 'rezygnacja')
