@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import string
-
-from django.http import HttpResponse
 from import_export import resources
 from .models import Student
 from import_export.fields import Field
-import random
-from django.utils.encoding import force_text
 
 
 class StudentResource(resources.ModelResource):

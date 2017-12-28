@@ -1,17 +1,11 @@
-from __future__ import with_statement
-
 import django
 import random
 import string
-from tstr.tstr_app.models import Student
 
 from django.contrib import admin
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from import_export.admin import ImportExportModelAdmin
-
-# Register your models here.
 from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
 from .resources import StudentResource
 
@@ -19,7 +13,7 @@ from .resources import StudentResource
 @admin.register(Student)
 class StudentAdmin(ImportExportModelAdmin):
     resource_class = StudentResource
-    list_display = ('indeks', 'first_name', 'last_name')
+    list_display = ('indeks', 'first_name', 'last_name', 'is_active_USOS')
     from_encoding = 'utf-8'
 
     def import_action(self, request, *args, **kwargs):
@@ -59,8 +53,6 @@ class StudentAdmin(ImportExportModelAdmin):
                 index = elem[5].replace('"', '')
                 password = ''.join(
                     random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8))
-
-                # print(first_name, last_name, index, username, password, is_active_usos, sep=" ; ")
 
                 try:
                     student = Student.objects.get(indeks=index)
