@@ -3,7 +3,10 @@ import django.db.models
 from tstr.tstr_app.models import Student
 from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 def index(request):
     return render(request, "home/landing_page.html", {})
@@ -24,3 +27,32 @@ def question(request, question_id):
 
 def menu(request):
     return render(request, "home/menu.html", {})
+
+
+def login_user(request):
+    errors = []
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                try:
+                    get_object_or_404(Student, auth=request.user)
+
+                except:
+                    url = reverse('menu', args=(),
+                                  kwargs={})
+                    return HttpResponseRedirect(url)
+                url = reverse('menu', args=(),
+                              kwargs={})
+                return HttpResponseRedirect(url)
+            else:
+                errors.append('Nieaktywne konto')
+
+        else:
+            print("jestem w else drugi")
+            errors.append('Niepoprawne dane')
+    return render(request, 'home/landing_page.html', {'errors': errors})

@@ -19,7 +19,7 @@ from tstr.tstr_app import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^$', auth_views.login, {'template_name': 'home/landing_page.html'}, name='login'),
+    url(r'^$', views.login_user, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^questions', views.questions, name='questions'),
     url(r'^question/(?P<question_id>\d+)', views.question, name='question'),

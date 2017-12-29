@@ -53,6 +53,13 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Zaloguj się</h2>
                     <div id="login">
+                         {% if errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                         <form method="post" class="login-form">
                             {% csrf_token %}
                             <div class="form-group">
