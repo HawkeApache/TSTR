@@ -237,7 +237,6 @@ a:focus {
 @media (min-width: 767px) {
   .content-section {
     padding-top: 175px;
-      min-height: 650px;
   }
   .download-section {
     padding: 30px 0;
@@ -245,6 +244,9 @@ a:focus {
   #map {
     height: 400px;
     margin-top: 250px;
+  }
+  .inside-template{
+      min-height: 650px;
   }
 }
 .btn {
