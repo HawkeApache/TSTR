@@ -24,3 +24,7 @@ def question(request, question_id):
 
 def menu(request):
     return render(request, "home/menu.html", {})
+
+
+def tests(request):
+    return render(request, "home/tests.html", {})
