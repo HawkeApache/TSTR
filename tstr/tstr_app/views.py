@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+
 
 def index(request):
     return render(request, "home/landing_page.html", {})
@@ -25,6 +27,7 @@ def question(request, question_id):
     return render(request, "home/question.html", {"question": answers_set, "correct": correct})
 
 
+@login_required
 def menu(request):
     return render(request, "home/menu.html", {})
 
@@ -53,6 +56,5 @@ def login_user(request):
                 errors.append('Nieaktywne konto')
 
         else:
-            print("jestem w else drugi")
             errors.append('Niepoprawne dane')
     return render(request, 'home/landing_page.html', {'errors': errors})

@@ -11,8 +11,12 @@
                         <h1 class="brand-heading">TSTR</h1>
                         <p class="intro-text">Oszczędzaj czas i ucz się efektywniej!
                             <br>Przeprowadzaj kolokwia online</p>
+                         {% if user.is_authenticated %}
+                            <a href="menu" class="btn btn-default btn-default-black btn-lg">Menu</a>
+                    {% else %}
                         <a href="#login" class="btn btn-default btn-default-black btn-lg">Zaloguj się</a>
                         <a href="" class="btn btn-selected btn-lg">Załóż konto</a>
+                        {% endif %}
                         <br>
                         <br>
                         <br>
@@ -47,9 +51,11 @@
     </section>
 
     <!-- Login Section -->
+
     <section id="login" class="content-section text-center">
         <div class="download-section">
             <div class="container">
+            {% if not user.is_authenticated %}
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Zaloguj się</h2>
                     <div id="login">
@@ -77,9 +83,11 @@
                         <p>Nie posiadasz jeszcze konta? <a href="\login">Zarejestruj się!</a></p>
                     </div>
                 </div>
+             {% endif %}
             </div>
         </div>
     </section>
+
 
     <!-- Contact Section -->
     <section id="contact" class="container content-section text-center">
