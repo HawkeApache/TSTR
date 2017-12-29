@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import django.db.models
 from tstr.tstr_app.models import Student
-from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion
+from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion, Test
 from django.shortcuts import get_object_or_404
 
 
@@ -27,4 +27,5 @@ def menu(request):
 
 
 def tests(request):
-    return render(request, "home/tests.html", {})
+    t = Test.objects.all()
+    return render(request, "home/tests.html", {"tests": t, "title": "Aktywne kolokwia"})
