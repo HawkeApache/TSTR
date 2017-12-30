@@ -62,10 +62,15 @@ def login_user(request):
 
 # wyswietlam grupy do ktorych nalezy student
 @login_required
-def tests(request):
+def users_groups(request):
     student_username = request.user.username
-    grup = TeachingGroup.objects.filter(student__username=student_username)
-    return render(request, "home/groups.html", {"grups": grup, "title": "Twoje grupy"})
+    group = TeachingGroup.objects.filter(student__username=student_username)
+    return render(request, "home/groups.html", {"groups": group, "title": "Twoje grupy"})
 
+
+@login_required
+def tests_for_group(reguest, group_id):
+    tests = Test.objects.filter(teachinggroup=group_id)
+    return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
 
 
