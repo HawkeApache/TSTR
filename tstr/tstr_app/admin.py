@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
+from tstr.tstr_app.models import Student, OpenQuestion, Test, TeachingGroup, ClosedQuestion, Answer, WrapWordQuestion
 
 
 @admin.register(Student)
@@ -19,7 +19,7 @@ class TestAdmin(admin.ModelAdmin):
     list_display = ('test_name', 'start_time', 'end_time')
 
 
-@admin.register(Group)
+@admin.register(TeachingGroup)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name',)
 

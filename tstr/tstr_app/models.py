@@ -30,9 +30,9 @@ class WrapWordQuestion(Question):
 
 class Test(models.Model):
     test_name = models.CharField(max_length=255)
-    open_questions = models.ManyToManyField(OpenQuestion)
-    closed_questions = models.ManyToManyField(ClosedQuestion)
-    wrap_word_question = models.ManyToManyField(WrapWordQuestion)
+    open_questions = models.ManyToManyField(OpenQuestion, blank=True)
+    closed_questions = models.ManyToManyField(ClosedQuestion, blank=True)
+    wrap_word_question = models.ManyToManyField(WrapWordQuestion, blank=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 
@@ -48,7 +48,7 @@ class Student(User):
         return self.index
 
 
-class Group(models.Model):
+class TeachingGroup(models.Model):
     name = models.CharField(max_length=255)
     tests = models.ManyToManyField(Test)
     student = models.ManyToManyField(Student)

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import django.db.models
-from tstr.tstr_app.models import Student
+from tstr.tstr_app.models import Student, TeachingGroup
 from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion, Test
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -60,6 +60,12 @@ def login_user(request):
     return render(request, 'home/landing_page.html', {'errors': errors})
 
 
+# wyswietlam grupy do ktorych nalezy student
+@login_required
 def tests(request):
-    t = Test.objects.all()
-    return render(request, "home/tests.html", {"tests": t, "title": "Aktywne kolokwia"})
+    student_username = request.user.username
+    grup = TeachingGroup.objects.filter(student__username=student_username)
+    return render(request, "home/groups.html", {"grups": grup, "title": "Twoje grupy"})
+
+
+
