@@ -16,10 +16,12 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from tstr.tstr_app import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^$', views.index, name='landing_page'),
+    url(r'^$', views.login_user, name='login'),
     url(r'^tests', views.tests, name='tests'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^questions', views.questions, name='questions'),
     url(r'^question/(?P<question_id>\d+)', views.question, name='question'),
     url(r'menu', views.menu, name='menu'),

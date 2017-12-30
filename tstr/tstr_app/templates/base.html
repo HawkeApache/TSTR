@@ -41,11 +41,21 @@
                 <li class="hidden">
                     <a href="#page-top"></a>
                 </li>
+
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a class="page-scroll" >Witaj, {{ user.get_username }}</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="{% url 'logout' %}">Wyloguj się</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a class="page-scroll" href="/#login">Zaloguj się</a>
+                        </li>
+                    {% endif %}
                 <li>
                     <a class="page-scroll" href="/#about">O projekcie</a>
-                </li>
-                <li>
-                    <a class="page-scroll" href="/#login">Zaloguj się</a>
                 </li>
                 <li>
                     <a class="page-scroll" href="/#contact">Kontakt</a>
