@@ -42,7 +42,7 @@ class StudentAdmin(ImportExportModelAdmin):
          tmpfile = open("passwords.txt", "wb")
 
          if request.POST and form.is_valid():
-             print(sys.getdefaultencoding())
+            
              import_file = form.cleaned_data['import_file']
              data = bytes()
              for chunk in (import_file.chunks()):
