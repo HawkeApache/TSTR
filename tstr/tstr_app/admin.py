@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
+from imp import reload
+
 from django.contrib import admin
 import django
 import random
@@ -12,6 +15,7 @@ from import_export.admin import ImportExportModelAdmin
 from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
 from .resources import StudentResource
 
+reload(sys).setdefaultencoding('UTF8')
 @admin.register(Student)
 class StudentAdmin(ImportExportModelAdmin):
      resource_class = StudentResource
@@ -38,6 +42,7 @@ class StudentAdmin(ImportExportModelAdmin):
          tmpfile = open("passwords.txt", "wb")
 
          if request.POST and form.is_valid():
+             print(sys.getdefaultencoding())
              import_file = form.cleaned_data['import_file']
              data = bytes()
              for chunk in (import_file.chunks()):
@@ -49,7 +54,7 @@ class StudentAdmin(ImportExportModelAdmin):
                      continue
                  if len(line) == 0:
                     continue
-                 elem = str(line.decode('utf-8')).split(";")
+                 elem = str(line.decode(sys.getdefaultencoding())).split(";")
                  first_name = elem[1].replace('"', '')
                  last_name = elem[0].replace('"', '')
                  is_active_usos = 1
