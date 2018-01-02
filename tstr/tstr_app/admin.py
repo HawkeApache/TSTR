@@ -41,12 +41,14 @@ class StudentAdmin(ImportExportModelAdmin):
              import_file = form.cleaned_data['import_file']
              data = bytes()
              for chunk in (import_file.chunks()):
-                 data  += chunk
+                 data += chunk
 
              tab = data.split(b'\r\n')
              for index, line in enumerate(tab):
                  if index == 0:
                      continue
+                 if len(line) == 0:
+                    continue
                  elem = str(line.decode('utf-8')).split(";")
                  first_name = elem[1].replace('"', '')
                  last_name = elem[0].replace('"', '')
