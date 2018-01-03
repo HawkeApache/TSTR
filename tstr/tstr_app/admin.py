@@ -15,7 +15,6 @@ from import_export.admin import ImportExportModelAdmin
 from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
 from .resources import StudentResource
 
-reload(sys).setdefaultencoding('UTF8')
 @admin.register(Student)
 class StudentAdmin(ImportExportModelAdmin):
      resource_class = StudentResource

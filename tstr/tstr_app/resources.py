@@ -10,7 +10,6 @@ class StudentResource(resources.ModelResource):
     last_name = Field(column_name='nazwisko', attribute='last_name')
     first_name = Field(column_name='imie', attribute='first_name')
     index = Field(column_name='index', attribute='index')
-    password = Field(column_name='password', attribute='password')
     username = Field(column_name='username', attribute='username')
 
     class Meta:
