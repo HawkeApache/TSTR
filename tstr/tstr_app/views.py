@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import django.db.models
-from tstr.tstr_app.models import Student
-from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion
+from tstr.tstr_app.models import Student, TeachingGroup
+from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion, Test
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, redirect
@@ -58,3 +58,19 @@ def login_user(request):
         else:
             errors.append('Niepoprawne dane')
     return render(request, 'home/landing_page.html', {'errors': errors})
+
+
+# wyswietlam grupy do ktorych nalezy student
+@login_required
+def users_groups(request):
+    student_username = request.user.username
+    group = TeachingGroup.objects.filter(student__username=student_username)
+    return render(request, "home/groups.html", {"groups": group, "title": "Twoje grupy"})
+
+
+@login_required
+def tests_for_group(reguest, group_id):
+    tests = Test.objects.filter(teachinggroup=group_id)
+    return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
+
+
