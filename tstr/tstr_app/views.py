@@ -70,7 +70,27 @@ def users_groups(request):
 
 @login_required
 def tests_for_group(reguest, group_id):
+    # todo sprawdzic czy zalogowany user na pewno ma dostep do tej grupy
+    # w przecinwym przypadku 403
+
     tests = Test.objects.filter(teachinggroup=group_id)
     return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
+
+
+@login_required()
+def test(request, test_id):
+    # todo sprawdzic czy zalogowany user na pewno moze wypelnic dany test(czy ma dostep i czy juz przypadkiem nie wypelnil)
+    # w przecinwym przypadku 403
+
+    open_questions = Test.objects.get(id=test_id).open_questions.all()
+    print(open_questions)
+    closed_questions = Test.objects.get(id=test_id).closed_questions.all()
+    print(closed_questions)
+    wrap_questions = Test.objects.get(id=test_id).wrap_word_question.all()
+    print(wrap_questions)
+
+    #todo handle post z odpowiezdiami do pytan
+
+    return render(request, "home/test.html", {"open": open_questions, "closed": closed_questions, "wrap": wrap_questions})
 
 

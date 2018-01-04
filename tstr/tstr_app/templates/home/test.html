@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <!-- Menu Section -->
+    <section id="menu" class="container content-section text-center inside-template">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="brand-heading">{{ title }}</h1>
+            </div>
+        </div>
+        <!-- todo form w którym będziemy wyswietlac rozne pytania i od razu bedziemy mogli wpisac odpowiedz i wszystko to na jednej stronie -->
+        {% for group in groups %}
+            <div class="row col-lg-12" id="test-options">
+            <a href="{% url 'tests_for_group' group.id  %}" class="btn btn-default btn-lg test-option">
+                    <span class="test-name">
+                        <h3>{{ group.name }}</h3>
+                    </span>
+            </a>
+        </div>
+        {% endfor %}
+    </section>
+{% endblock %}

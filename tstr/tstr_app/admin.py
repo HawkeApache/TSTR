@@ -12,7 +12,7 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from import_export.admin import ImportExportModelAdmin
-from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
+from tstr.tstr_app.models import Student, OpenQuestion, Test, TeachingGroup, ClosedQuestion, Answer, WrapWordQuestion
 from .resources import StudentResource
 
 @admin.register(Student)
