@@ -65,3 +65,12 @@ class Answer(models.Model):
     answer = models.IntegerField()
     position_in_test = models.IntegerField()
     time_of_answer = models.DateTimeField()
+
+
+class TestResult(models.Model):
+    student = models.ManyToManyField(Student)
+    test = models.ManyToManyField(Test)
+    max_score = models.IntegerField()
+    score = models.IntegerField()
+
+    #check if student and test unique together

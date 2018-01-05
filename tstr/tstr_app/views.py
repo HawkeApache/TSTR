@@ -77,8 +77,10 @@ def tests_for_group(reguest, group_id):
     return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
 
 
-@login_required()
+@login_required
 def test(request, test_id):
+    #???????
+    # jakby na jednej stronie html dalo sie to ogarnac to random bez problema pojdzie
     # todo sprawdzic czy zalogowany user na pewno moze wypelnic dany test(czy ma dostep i czy juz przypadkiem nie wypelnil)
     # w przecinwym przypadku 403
 
@@ -90,7 +92,16 @@ def test(request, test_id):
     print(wrap_questions)
 
     #todo handle post z odpowiezdiami do pytan
+    #wszystkie pytania na raz wysylane ale po koleji wyswietlane w htmlu
 
     return render(request, "home/test.html", {"open": open_questions, "closed": closed_questions, "wrap": wrap_questions})
 
 
+@login_required
+def question(request, question_id):
+    pass
+    # altenatywa dla test
+    # renderuje się zaraz po przejsciu z test_for_groups
+    # link do pierwszego pytania z widoku tests_for_group i zaczynamy rozwiązywanie testu
+    # w returnie pytanie, typ pytania i id następnego pytania(jak zrandomizowac???)
+    # sprawdzamy czy jest next id z open jak tak to spoko jak nie to nierzemy closed a nastepnie wrap
