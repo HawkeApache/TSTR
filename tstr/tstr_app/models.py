@@ -10,9 +10,15 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
+    class Meta:
+        ordering = ['id']
+
 
 class OpenQuestion(Question):
     correct_answer = models.TextField()
+
+    def __str__(self):
+        return self.__class__.__name__ + " " + self.question_text
 
 
 class ClosedQuestion(Question):
@@ -22,17 +28,21 @@ class ClosedQuestion(Question):
         max_length=255,
         help_text="Please insert correct answer(s) as integers separated by comma e.g.: 0, 2")
 
+    def __str__(self):
+        return self.__class__.__name__ + " " + self.question_text
+
 
 class WrapWordQuestion(Question):
     # todo inteligiente zostawianie miejsca
     correct_answer = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.__class__.__name__ + " " + self.question_text
+
 
 class Test(models.Model):
     test_name = models.CharField(max_length=255)
-    open_questions = models.ManyToManyField(OpenQuestion, blank=True)
-    closed_questions = models.ManyToManyField(ClosedQuestion, blank=True)
-    wrap_word_question = models.ManyToManyField(WrapWordQuestion, blank=True)
+    questions = models.ManyToManyField(Question)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 

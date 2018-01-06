@@ -23,8 +23,8 @@ urlpatterns = [
     url(r'^tests', views.users_groups, name='users_groups'),
     url(r'^group/(?P<group_id>\d+)', views.tests_for_group, name='tests_for_group'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
-   # url(r'^questions', views.questions, name='questions'),
-    url(r'^question/(?P<question_id>\d+)', views.question, name='question'),
+    # url(r'^questions', views.questions, name='questions'),
+    # url(r'^question/(?P<question_id>\d+)', views.question, name='question'),
     url(r'menu', views.menu, name='menu'),
     url(r'^admin/', admin.site.urls),
     url(r'^test/(?P<test_id>\d+)/(?P<question_id>\d+)', views.question, name='test')

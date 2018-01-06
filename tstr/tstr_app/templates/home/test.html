@@ -9,11 +9,24 @@
     <section id="menu" class="container content-section text-center inside-template">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <h1 class="brand-heading">{{ title }}</h1>
+                <h1 class="brand-heading">Pytanie</h1>
             </div>
         </div>
-        <!-- todo form w którym będziemy wyswietlac rozne pytania i od razu bedziemy mogli wpisac odpowiedz i wszystko to na jednej stronie -->
-        {{ q }}
-        {{ t }}
+        <div class="row col-lg-12" id="test-options">
+            {% if next_question_id %}
+                <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default btn-lg test-option">
+                    <span class="test-name">
+                        <h3>{{ question.question_text }}</h3>
+                    </span>
+                </a>
+            {% else %}
+                <a href="" class="btn btn-default btn-lg test-option">
+                    <span class="test-name">
+                        <h3>{{ question.question_text }}</h3>
+                    </span>
+                </a>
+                <h3>KONIEC</h3>
+            {% endif %}
+        </div>
     </section>
 {% endblock %}

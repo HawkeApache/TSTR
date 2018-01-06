@@ -14,13 +14,14 @@
         </div>
         {% for test in tests %}
             <div class="row col-lg-12" id="test-options">
-            <a href="" class="btn btn-default btn-lg test-option">
+            <!-- link to first question of test-->
+                <a href="/test/{{ test.id }}/{{ test.questions.first.id }}" class="btn btn-default btn-lg test-option">
                     <span class="test-name">
                         <h3>{{ test.test_name }}</h3>
                     </span>
-                <p class="test-description">Dostępny: {{ test.start_time }} - {{ test.end_time }}</p>
-            </a>
-        </div>
+                    <p class="test-description">Dostępny: {{ test.start_time }} - {{ test.end_time }}</p>
+                </a>
+            </div>
         {% endfor %}
     </section>
 {% endblock %}

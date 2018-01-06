@@ -19,12 +19,12 @@ def index(request):
 #     return render(request, "home/questions.html", {"questions": q})
 
 
-def question(request, question_id):
-    q = get_object_or_404(ClosedQuestion, id=question_id)
-    print(isinstance(q, Question))
-    answers_set = q.answers.split(",")
-    correct = q.correct_answer.split(",")
-    return render(request, "home/question.html", {"question": answers_set, "correct": correct})
+# def question(request, question_id):
+#     q = get_object_or_404(ClosedQuestion, id=question_id)
+#     print(isinstance(q, Question))
+#     answers_set = q.answers.split(",")
+#     correct = q.correct_answer.split(",")
+#     return render(request, "home/question.html", {"question": answers_set, "correct": correct})
 
 
 @login_required
@@ -100,26 +100,26 @@ def test(request, test_id):
 @login_required
 def question(request, test_id, question_id):
 
-    # altenatywa dla test
-    # renderuje się zaraz po przejsciu z test_for_groups
-    # link do pierwszego pytania z widoku tests_for_group i zaczynamy rozwiązywanie testu
-    # w returnie pytanie, typ pytania i id następnego pytania(jak zrandomizowac???)
-    # sprawdzamy czy jest next id z open jak tak to spoko jak nie to nierzemy closed a nastepnie wrap
+    question = Test.objects.get(id=test_id).questions.get(id=question_id)
+    next_question = Test.objects.get(id=test_id).questions.filter(id__gt=question.id).first()
 
-    #case if we start test
-    question_type = ""
-    questions = []
-    if question_id == "0":
-        question_type = "open_question"
-        questions = Test.objects.get(id=test_id).open_questions.all()
-        if not questions:
-            question_type = "closed_question"
-            questions = Test.objects.get(id=test_id).closed_questions.all()
-            if not questions:
-                question_type = "wrap_question"
-                questions = Test.objects.get(id=test_id).wrap_word_question.all()
+    question_type = question.__class__.__name__
+
+    return render(request, "home/test.html",
+                  {"question": question,
+                   "question_type": question_type,
+                   "next_question_id": next_question if not next_question else next_question.id,
+                   "test_id": test_id})
 
 
-    print(question_type)
-    print(questions[0])
-    return render(request, "home/test.html", {"q": question_id, "t": test_id})
+def precise_question_type(question):
+    try:
+        return question.openquestion
+    except AttributeError:
+        try:
+            return question.closedquestion
+        except AttributeError:
+            try:
+                return question.wrapwordquestion
+            except AttributeError:
+                print("spierdoliło sie na amen")
