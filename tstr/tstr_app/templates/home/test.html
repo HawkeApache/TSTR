@@ -13,14 +13,7 @@
             </div>
         </div>
         <!-- todo form w którym będziemy wyswietlac rozne pytania i od razu bedziemy mogli wpisac odpowiedz i wszystko to na jednej stronie -->
-        {% for group in groups %}
-            <div class="row col-lg-12" id="test-options">
-            <a href="{% url 'tests_for_group' group.id  %}" class="btn btn-default btn-lg test-option">
-                    <span class="test-name">
-                        <h3>{{ group.name }}</h3>
-                    </span>
-            </a>
-        </div>
-        {% endfor %}
+        {{ q }}
+        {{ t }}
     </section>
 {% endblock %}

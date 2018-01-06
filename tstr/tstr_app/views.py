@@ -14,9 +14,9 @@ def index(request):
     return render(request, "home/landing_page.html", {})
 
 
-def questions(request):
-    q = Question.objects.all()
-    return render(request, "home/questions.html", {"questions": q})
+# def questions(request):
+#     q = Question.objects.all()
+#     return render(request, "home/questions.html", {"questions": q})
 
 
 def question(request, question_id):
@@ -98,10 +98,28 @@ def test(request, test_id):
 
 
 @login_required
-def question(request, question_id):
-    pass
+def question(request, test_id, question_id):
+
     # altenatywa dla test
     # renderuje się zaraz po przejsciu z test_for_groups
     # link do pierwszego pytania z widoku tests_for_group i zaczynamy rozwiązywanie testu
     # w returnie pytanie, typ pytania i id następnego pytania(jak zrandomizowac???)
     # sprawdzamy czy jest next id z open jak tak to spoko jak nie to nierzemy closed a nastepnie wrap
+
+    #case if we start test
+    question_type = ""
+    questions = []
+    if question_id == "0":
+        question_type = "open_question"
+        questions = Test.objects.get(id=test_id).open_questions.all()
+        if not questions:
+            question_type = "closed_question"
+            questions = Test.objects.get(id=test_id).closed_questions.all()
+            if not questions:
+                question_type = "wrap_question"
+                questions = Test.objects.get(id=test_id).wrap_word_question.all()
+
+
+    print(question_type)
+    print(questions[0])
+    return render(request, "home/test.html", {"q": question_id, "t": test_id})
