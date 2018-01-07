@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 import django.db.models
 from tstr.tstr_app.models import Student
@@ -8,7 +9,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 def index(request):
     return render(request, "home/landing_page.html", {})
@@ -58,3 +60,25 @@ def login_user(request):
         else:
             errors.append('Niepoprawne dane')
     return render(request, 'home/landing_page.html', {'errors': errors})
+
+
+@login_required
+def settings(request):
+    errors = []
+    if not request.user.is_superuser:
+        index_nr = Student.objects.get(username=request.user.username).index
+    else:
+        index_nr = ""
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            return redirect('settings')
+        else:
+            errors.append('Wystąpił błąd')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'home/settings.html', {'errors': errors, 'index_nr': index_nr}, {
+        'form': form
+    })
