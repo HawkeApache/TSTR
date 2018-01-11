@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <!-- Close Question -->
+    <section id="quesion" class="container content-section text-center inside-template">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="brand-heading">Pytanie 1 z 12</h1>
+            </div>
+        </div>
+
+        <form>
+            <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
+                Brownie apple pie chocolate
+                sugar plum pie pudding cotton candy sesame snaps. Apple pie bonbon biscuit
+                cotton candy. Jujubes dessert dragée dragée pudding pie pie oat cake. Pudding muffin sweet
+                jelly lollipop toffee bonbon halvah sweet roll.</label>
+
+            <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers" data-toggle="buttons">
+
+                <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
+                    <input type="radio" name="options" id="option1" autocomplete="off"> Opcja A
+                </label>
+
+                 <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
+                    <input type="radio" name="options" id="option1" autocomplete="off"> Opcja A
+                </label>
+
+                 <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
+                    <input type="radio" name="options" id="option1" autocomplete="off"> Opcja A
+                </label>
+
+                 <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
+                    <input type="radio" name="options" id="option1" autocomplete="off"> Opcja A
+                </label>
+            </div>
+
+            <div class="col-md-8 col-md-offset-2" id="question-button">
+                <div class="col-lg-8 col-md-8"></div>
+                <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default col-lg-4"
+                   id="question_button">
+                    Dalej
+                </a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
