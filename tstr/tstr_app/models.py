@@ -35,14 +35,6 @@ class ClosedQuestion(Question):
         return self.__class__.__name__ + " " + self.question_text
 
 
-class WrapWordQuestion(Question):
-    # todo inteligiente zostawianie miejsca
-    correct_answer = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.__class__.__name__ + " " + self.question_text
-
-
 class Test(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     test_name = models.CharField(max_length=255)

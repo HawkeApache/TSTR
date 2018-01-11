@@ -99,14 +99,29 @@ def test(request, test_id):
 
 @login_required
 def question(request, test_id, question_id):
+    #todo handle post
+
+    number_of_questions = Test.objects.get(id=test_id).questions.all().count()
+    index_of_current_question = 0
+    for index, item in enumerate(Test.objects.get(id=test_id).questions.all()):
+        if str(item.id) == question_id:
+            index_of_current_question = index+1
 
     question = Test.objects.get(id=test_id).questions.get(id=question_id)
     next_question = Test.objects.get(id=test_id).questions.filter(id__gt=question.id).first()
 
-    question_type = question.__class__.__name__
+    question = precise_question_type(question)
+    answers = []
+    if isinstance(question, ClosedQuestion):
+        answers = question.answers.split("&")
+
+    question_type = str(question.__class__.__name__)
 
     return render(request, "home/test.html",
-                  {"question": question,
+                  {"number": index_of_current_question,
+                   "all": number_of_questions,
+                   "question": question,
+                   "answers": answers,
                    "question_type": question_type,
                    "next_question_id": next_question if not next_question else next_question.id,
                    "test_id": test_id})
@@ -119,9 +134,6 @@ def precise_question_type(question):
         try:
             return question.closedquestion
         except AttributeError:
-            try:
-                return question.wrapwordquestion
-            except AttributeError:
                 print("spierdoliło sie na amen")
 
 
