@@ -161,9 +161,5 @@ def precise_question_type(question):
                 print("spierdoliło sie na amen")
 
 
-def open_question(request):
-    return render(request, "home/close_question.html", {})
-
-
 def end(request):
     return render(request, "home/end.html", {})
