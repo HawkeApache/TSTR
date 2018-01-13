@@ -19,8 +19,10 @@
                     <span class="test-name">
                         <h3>{{ test.test_name }}</h3>
                     </span>
+
                     <p class="test-description">Dostępny: {{ test.start_time }} - {{ test.end_time }}</p>
                 </a>
+            {{ test.active }}
             </div>
         {% endfor %}
     </section>

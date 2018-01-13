@@ -1,13 +1,17 @@
+import datetime
+import pytz
+
 from django.shortcuts import render
 import django.db.models
-from tstr.tstr_app.models import Student, TeachingGroup
-from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion, Test
+from tstr.tstr_app.models import Student, TeachingGroup, User
+from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion, Test, Answer, TestResult
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 
 def index(request):
@@ -74,6 +78,21 @@ def tests_for_group(reguest, group_id):
     # w przecinwym przypadku 403
 
     tests = Test.objects.filter(teachinggroup=group_id)
+    student = User.objects.get(username=reguest.user.username)
+    test_results = Test.objects.filter(testresult__student=student)
+    current_time = timezone.now()
+
+    for t in tests:
+        if t in test_results:
+            t.active = False
+        else:
+            if t.start_time <= current_time <= t.end_time:
+                t.active = True
+            else:
+                t.active = False
+
+
+
     return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
 
 
@@ -99,30 +118,76 @@ def test(request, test_id):
 
 @login_required
 def question(request, test_id, question_id):
-    #todo handle post
+    # post handler
+    if request.method == "POST":
+        current_user = request.user.username
+        current_student = User.objects.get(username=current_user).student
+        current_test = Test.objects.get(id=test_id)
+        current_question = Question.objects.get(id=question_id)
+        current_time = timezone.now()
 
+        answer = Answer.objects.create(time_of_answer=current_time)
+
+        nxt = ""
+
+        if "open" in request.POST:
+            user_answer = request.POST.get('question_input')
+            answer.answer = user_answer
+            answer.save()
+
+            answer.student.add(current_student)
+            answer.test.add(current_test)
+            answer.question.add(current_question)
+
+            nxt = request.POST.get('open')
+            if not nxt:
+                test_result = TestResult.objects.create(max_score=Test.objects.get(id=test_id).questions.all().count(), score=0)
+                test_result.save()
+                test_result.student.add(current_student)
+                test_result.test.add(current_test)
+                return redirect("end")
+
+        if "close" in request.POST:
+            user_answer = request.POST.get("radio")
+            answer.answer = user_answer
+            answer.save()
+
+            answer.student.add(current_student)
+            answer.test.add(current_test)
+            answer.question.add(current_question)
+
+            nxt = request.POST.get('close')
+            if not nxt:
+                test_result = TestResult.objects.create(max_score=Test.objects.get(id=test_id).questions.all().count(), score=0)
+                test_result.save()
+                test_result.student.add(current_student)
+                test_result.test.add(current_test)
+                return redirect("end")
+
+        return redirect('test', test_id, nxt)
+
+    # get index of current question and number of all questions
     number_of_questions = Test.objects.get(id=test_id).questions.all().count()
     index_of_current_question = 0
     for index, item in enumerate(Test.objects.get(id=test_id).questions.all()):
         if str(item.id) == question_id:
             index_of_current_question = index+1
 
-    question = Test.objects.get(id=test_id).questions.get(id=question_id)
+    # get current question
+    question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
     next_question = Test.objects.get(id=test_id).questions.filter(id__gt=question.id).first()
 
-    question = precise_question_type(question)
+    # if ClosedQuestion
     answers = []
     if isinstance(question, ClosedQuestion):
         answers = question.answers.split("&")
-
-    question_type = str(question.__class__.__name__)
 
     return render(request, "home/test.html",
                   {"number": index_of_current_question,
                    "all": number_of_questions,
                    "question": question,
                    "answers": answers,
-                   "question_type": question_type,
+                   "question_type": str(question.__class__.__name__),
                    "next_question_id": next_question if not next_question else next_question.id,
                    "test_id": test_id})
 
@@ -139,3 +204,7 @@ def precise_question_type(question):
 
 def open_question(request):
     return render(request, "home/close_question.html", {})
+
+
+def end(request):
+    return render(request, "home/end.html", {})

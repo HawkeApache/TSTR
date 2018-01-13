@@ -68,8 +68,7 @@ class Answer(models.Model):
     student = models.ManyToManyField(Student) # ???
     test = models.ManyToManyField(Test)
     question = models.ManyToManyField(Question)
-    answer = models.IntegerField()
-    position_in_test = models.IntegerField()
+    answer = models.TextField()
     time_of_answer = models.DateTimeField()
 
 

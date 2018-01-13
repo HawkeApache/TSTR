@@ -6,51 +6,38 @@
 {% block content %}
 
     <!-- Open Question -->
-    {% ifequal question_type "OpenQuestion" %}
-        <section id="quesion" class="container content-section text-center inside-template">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                    {#                    todo #}
-                    <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>
-                </div>
-            </div>
 
-            <form>
+    <section id="quesion" class="container content-section text-center inside-template">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% ifequal question_type "OpenQuestion" %}
+
                 <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
                     {{ question.question_text }}
                 </label>
 
                 <div class="col-md-8 col-md-offset-2" id="question-input">
-                <textarea class="form-control" id="question_input" rows="8">
+                <textarea name="question_input" class="form-control" id="question_input" rows="8">
                 </textarea>
                 </div>
 
                 <div class="col-md-8 col-md-offset-2" id="question-button">
                     <div class="col-lg-8 col-md-8"></div>
                     {% if next_question_id %}
-                        <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default col-lg-4"
-                           id="question_button">
-                            Dalej
-                        </a>
+                        <button name="open" type="submit" value="{{ next_question_id }}" class="btn btn-default col-lg-4">Dalej</button>
                     {% else %}
-                        <a href="" class="btn btn-default col-lg-4"
-                           id="question_button">
-                            Zakończ test
-                        </a>
+                        <button name="open" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test</button>
                     {% endif %}
                 </div>
-            </form>
-        </section>
 
-    {% else %}
-        <section id="quesion" class="container content-section text-center inside-template">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                    <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>
-                </div>
-            </div>
+            {% else %}
 
-            <form>
                 <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
                     {{ question.question_text }}
                 </label>
@@ -60,7 +47,7 @@
 
                     {% for a in answers %}
                         <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
-                            <input type="radio" name="options" id="option1" autocomplete="off"> {{ a }}
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off"> {{ a }}
                         </label>
                     {% endfor %}
                 </div>
@@ -68,21 +55,15 @@
                 <div class="col-md-8 col-md-offset-2" id="question-button">
                     <div class="col-lg-8 col-md-8"></div>
                     {% if next_question_id %}
-                        <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default col-lg-4"
-                           id="question_button">
-                            Dalej
-                        </a>
+                        <button name="close" type="submit" value="{{ next_question_id }}" class="btn btn-default col-lg-4">Dalej</button>
                     {% else %}
-                        <a href="" class="btn btn-default col-lg-4"
-                           id="question_button">
-                            Zakończ test
-                        </a>
+                        <button name="close" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test</button>
                     {% endif %}
                 </div>
-            </form>
-        </section>
 
-    {% endifequal %}
+            {% endifequal %}
+        </form>
+    </section>
 
 
 

@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'menu', views.menu, name='menu'),
     url(r'^admin/', admin.site.urls),
     url(r'^test/(?P<test_id>[0-9a-f-]+)/(?P<question_id>[0-9a-f-]+)', views.question, name='test'),
-    url(r'^open_question/', views.open_question, name='open_question')
+    url(r'^open_question/', views.open_question, name='open_question'),
+    url(r'^end', views.end, name="end")
 ]
