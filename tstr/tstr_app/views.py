@@ -1,11 +1,5 @@
-import datetime
-import pytz
-
-from django.shortcuts import render
-import django.db.models
 from tstr.tstr_app.models import Student, TeachingGroup, User
-from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion, Test, Answer, TestResult
-from django.shortcuts import get_object_or_404
+from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -16,19 +10,6 @@ from django.utils import timezone
 
 def index(request):
     return render(request, "home/landing_page.html", {})
-
-
-# def questions(request):
-#     q = Question.objects.all()
-#     return render(request, "home/questions.html", {"questions": q})
-
-
-# def question(request, question_id):
-#     q = get_object_or_404(ClosedQuestion, id=question_id)
-#     print(isinstance(q, Question))
-#     answers_set = q.answers.split(",")
-#     correct = q.correct_answer.split(",")
-#     return render(request, "home/question.html", {"question": answers_set, "correct": correct})
 
 
 @login_required
@@ -91,29 +72,7 @@ def tests_for_group(reguest, group_id):
             else:
                 t.active = False
 
-
-
     return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
-
-
-@login_required
-def test(request, test_id):
-    #???????
-    # jakby na jednej stronie html dalo sie to ogarnac to random bez problema pojdzie
-    # todo sprawdzic czy zalogowany user na pewno moze wypelnic dany test(czy ma dostep i czy juz przypadkiem nie wypelnil)
-    # w przecinwym przypadku 403
-
-    open_questions = Test.objects.get(id=test_id).open_questions.all()
-    print(open_questions)
-    closed_questions = Test.objects.get(id=test_id).closed_questions.all()
-    print(closed_questions)
-    wrap_questions = Test.objects.get(id=test_id).wrap_word_question.all()
-    print(wrap_questions)
-
-    #todo handle post z odpowiezdiami do pytan
-    #wszystkie pytania na raz wysylane ale po koleji wyswietlane w htmlu
-
-    return render(request, "home/test.html", {"open": open_questions, "closed": closed_questions, "wrap": wrap_questions})
 
 
 @login_required
