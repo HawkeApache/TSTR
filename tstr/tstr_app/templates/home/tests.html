@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <!-- Menu Section -->
+    <section id="menu" class="container content-section text-center inside-template">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="brand-heading">{{ title }}</h1>
+            </div>
+        </div>
+        {% for test in tests %}
+            <div class="row col-lg-12" id="test-options">
+                <!-- link to first question of test-->
+                {% if test.active %}
+                    <a href="/test/{{ test.id }}/{{ test.questions.first.id }}"
+                       class="btn btn-default btn-lg test-option">
+                    <span class="test-name">
+                        <h3>{{ test.test_name }}</h3>
+                    </span>
+                        <p class="test-description">Dostępny: {{ test.start_time }} - {{ test.end_time }}</p>
+                    </a>
+                {% else %}
+                    <a class="btn btn-default btn-lg test-option" disabled>
+                    <span class="test-name">
+                        <h3>{{ test.test_name }}</h3>
+                    </span>
+                        <p class="test-description">Dostępny: {{ test.start_time }} - {{ test.end_time }}</p>
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}
