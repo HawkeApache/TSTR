@@ -79,3 +79,10 @@ class TestResult(models.Model):
 
     class Meta:
         unique_together = ('student', 'test')
+
+
+class TestInProgress(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+

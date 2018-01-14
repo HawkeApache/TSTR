@@ -1,5 +1,5 @@
 from tstr.tstr_app.models import Student, TeachingGroup, User
-from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult
+from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -48,6 +48,12 @@ def login_user(request):
 # wyswietlam grupy do ktorych nalezy student
 @login_required
 def users_groups(request):
+    current_user = request.user.username
+    current_student = User.objects.get(username=current_user).student
+    tests = TestInProgress.objects.all().filter(student=current_student)
+    if tests:
+        return begin_tests(request)
+
     student_username = request.user.username
     group = TeachingGroup.objects.filter(student__username=student_username)
     return render(request, "home/groups.html", {"groups": group, "title": "Twoje grupy"})
@@ -107,6 +113,8 @@ def question(request, test_id, question_id):
                     test=current_test)
                 test_result.save()
 
+                TestInProgress.objects.get(student=current_student, test=current_test).delete()
+
                 return redirect("end")
 
         if "close" in request.POST:
@@ -124,6 +132,8 @@ def question(request, test_id, question_id):
                     test=current_test)
                 test_result.save()
 
+                TestInProgress.objects.get(student=current_student, test=current_test).delete()
+
                 return redirect("end")
 
         return redirect('test', test_id, nxt)
@@ -138,6 +148,14 @@ def question(request, test_id, question_id):
     # get current question
     question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
     next_question = Test.objects.get(id=test_id).questions.filter(id__gt=question.id).first()
+
+    current_user = request.user.username
+    current_student = User.objects.get(username=current_user).student
+    current_test = Test.objects.get(id=test_id)
+    in_progress, created = TestInProgress.objects.get_or_create(student=current_student, test=current_test)
+    in_progress.question = question
+    in_progress.save()
+
 
     # if ClosedQuestion
     answers = []
@@ -166,3 +184,13 @@ def precise_question_type(question):
 
 def end(request):
     return render(request, "home/end.html", {})
+
+@login_required
+def begin_tests(request):
+    current_user = request.user.username
+    current_student = User.objects.get(username=current_user).student
+
+    tests = TestInProgress.objects.all().filter(student=current_student)
+
+    return render(request, "home/begin_tests.html", {"tests": tests})
+
