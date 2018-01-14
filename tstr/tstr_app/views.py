@@ -1,12 +1,16 @@
+from django.template import RequestContext
+
 from tstr.tstr_app.models import Student, TeachingGroup, User
 from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-
+from django.shortcuts import (
+render_to_response
+)
 
 def index(request):
     return render(request, "home/landing_page.html", {})
@@ -163,3 +167,11 @@ def precise_question_type(question):
 
 def end(request):
     return render(request, "home/end.html", {})
+
+
+def error404(request):
+    return render(request, "home/404.html", {})
+
+
+def error500(request):
+    return render(request, "home/500.html", {})

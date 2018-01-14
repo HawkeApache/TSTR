@@ -105,3 +105,4 @@ ENV/
 
 tstr/tstr_app/migrations/
 passwords.txt
+static_build
