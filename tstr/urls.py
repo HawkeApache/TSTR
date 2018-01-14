@@ -30,3 +30,6 @@ urlpatterns = [
     url(r'^test/(?P<test_id>[0-9a-f-]+)/(?P<question_id>[0-9a-f-]+)', views.question, name='test'),
     url(r'^end', views.end, name="end")
 ]
+
+handler404 = views.error404
+handler500 = views.error500
