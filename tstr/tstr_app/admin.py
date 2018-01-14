@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
 import sys
-from imp import reload
-
-from django.contrib import admin
 import django
-import random
-import string
 
 # Register your models here.
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from import_export.admin import ImportExportModelAdmin
-from tstr.tstr_app.models import Student, OpenQuestion, Test, TeachingGroup, ClosedQuestion, Answer
+from tstr.tstr_app.models import Student, OpenQuestion, Test, TeachingGroup, ClosedQuestion, Answer, TestResult
 from .resources import StudentResource
 
 @admin.register(Student)
@@ -115,4 +110,9 @@ class ClosedQuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+    list_display = ('student', 'test', 'is_correct')
+
+
+@admin.register(TestResult)
+class TestResultAdmin(admin.ModelAdmin):
+    list_display = ('student', 'test', 'score', 'max_score')
