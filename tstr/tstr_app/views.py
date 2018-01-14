@@ -85,7 +85,11 @@ def question(request, test_id, question_id):
         current_question = Question.objects.get(id=question_id)
         current_time = timezone.now()
 
-        answer = Answer.objects.create(time_of_answer=current_time)
+        answer = Answer.objects.create(
+            time_of_answer=current_time,
+            question=current_question,
+            test=current_test,
+            student=current_student)
 
         nxt = ""
 
@@ -94,33 +98,32 @@ def question(request, test_id, question_id):
             answer.answer = user_answer
             answer.save()
 
-            answer.student.add(current_student)
-            answer.test.add(current_test)
-            answer.question.add(current_question)
-
             nxt = request.POST.get('open')
             if not nxt:
-                test_result = TestResult.objects.create(max_score=Test.objects.get(id=test_id).questions.all().count(), score=0)
+                test_result = TestResult.objects.create(
+                    max_score=Test.objects.get(id=test_id).questions.all().count(),
+                    score=0,
+                    student=current_student,
+                    test=current_test)
                 test_result.save()
-                test_result.student.add(current_student)
-                test_result.test.add(current_test)
+
                 return redirect("end")
 
         if "close" in request.POST:
             user_answer = request.POST.get("radio")
             answer.answer = user_answer
+            answer.is_correct = str(user_answer) == str(current_question.closedquestion.correct_answer)
             answer.save()
-
-            answer.student.add(current_student)
-            answer.test.add(current_test)
-            answer.question.add(current_question)
 
             nxt = request.POST.get('close')
             if not nxt:
-                test_result = TestResult.objects.create(max_score=Test.objects.get(id=test_id).questions.all().count(), score=0)
+                test_result = TestResult.objects.create(
+                    max_score=Test.objects.get(id=test_id).questions.all().count(),
+                    score=0,
+                    student=current_student,
+                    test=current_test)
                 test_result.save()
-                test_result.student.add(current_student)
-                test_result.test.add(current_test)
+
                 return redirect("end")
 
         return redirect('test', test_id, nxt)

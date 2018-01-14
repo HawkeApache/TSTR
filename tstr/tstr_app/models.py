@@ -27,9 +27,7 @@ class OpenQuestion(Question):
 class ClosedQuestion(Question):
     answers = models.TextField(
         help_text="Please insert answers separated by & e.g.: answer1 & answer")
-    correct_answer = models.CharField(
-        max_length=255,
-        help_text="Please insert correct answer(s) as integers separated by comma e.g.: 0, 2")
+    correct_answer = models.IntegerField(help_text="Please note that answers are indexing from 0")
 
     def __str__(self):
         return self.__class__.__name__ + " " + self.question_text
@@ -65,17 +63,19 @@ class TeachingGroup(models.Model):
 
 # todo czy na pewno takie relacje??
 class Answer(models.Model):
-    student = models.ManyToManyField(Student) # ???
-    test = models.ManyToManyField(Test)
-    question = models.ManyToManyField(Question)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    is_correct = models.BooleanField(default=False)
     answer = models.TextField()
     time_of_answer = models.DateTimeField()
 
 
 class TestResult(models.Model):
-    student = models.ManyToManyField(Student)
-    test = models.ManyToManyField(Test)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
     max_score = models.IntegerField()
     score = models.IntegerField()
 
-    #check if student and test unique together
+    class Meta:
+        unique_together = ('student', 'test')
