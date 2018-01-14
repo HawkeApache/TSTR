@@ -12,7 +12,7 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from import_export.admin import ImportExportModelAdmin
-from tstr.tstr_app.models import Student, OpenQuestion, Test, Group, ClosedQuestion, Answer, WrapWordQuestion
+from tstr.tstr_app.models import Student, OpenQuestion, Test, TeachingGroup, ClosedQuestion, Answer
 from .resources import StudentResource
 
 @admin.register(Student)
@@ -41,7 +41,7 @@ class StudentAdmin(ImportExportModelAdmin):
          tmpfile = open("passwords.txt", "wb")
 
          if request.POST and form.is_valid():
-            
+
              import_file = form.cleaned_data['import_file']
              data = bytes()
              for chunk in (import_file.chunks()):
@@ -103,7 +103,7 @@ class TestAdmin(admin.ModelAdmin):
     list_display = ('test_name', 'start_time', 'end_time')
 
 
-@admin.register(Group)
+@admin.register(TeachingGroup)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
@@ -111,11 +111,6 @@ class GroupAdmin(admin.ModelAdmin):
 @admin.register(ClosedQuestion)
 class ClosedQuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'question_text',)
-
-
-@admin.register(WrapWordQuestion)
-class WrapWordQuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'question_text')
 
 
 @admin.register(Answer)

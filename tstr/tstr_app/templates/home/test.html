@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <!-- Open Question -->
+
+    <section id="quesion" class="container content-section text-center inside-template">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% ifequal question_type "OpenQuestion" %}
+
+                <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
+                    {{ question.question_text }}
+                </label>
+
+                <div class="col-md-8 col-md-offset-2" id="question-input">
+                <textarea name="question_input" class="form-control" id="question_input" rows="8">
+                </textarea>
+                </div>
+
+                <div class="col-md-8 col-md-offset-2" id="question-button">
+                    <div class="col-lg-8 col-md-8"></div>
+                    {% if next_question_id %}
+                        <button name="open" type="submit" value="{{ next_question_id }}" class="btn btn-default col-lg-4">Dalej</button>
+                    {% else %}
+                        <button name="open" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test</button>
+                    {% endif %}
+                </div>
+
+            {% else %}
+
+                <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
+                    {{ question.question_text }}
+                </label>
+
+                <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers"
+                     data-toggle="buttons">
+
+                    {% for a in answers %}
+                        <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off"> {{ a }}
+                        </label>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-8 col-md-offset-2" id="question-button">
+                    <div class="col-lg-8 col-md-8"></div>
+                    {% if next_question_id %}
+                        <button name="close" type="submit" value="{{ next_question_id }}" class="btn btn-default col-lg-4">Dalej</button>
+                    {% else %}
+                        <button name="close" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test</button>
+                    {% endif %}
+                </div>
+
+            {% endifequal %}
+        </form>
+    </section>
+
+
+
+{#    <!-- Menu Section -->#}
+{#    <section id="menu" class="container content-section text-center inside-template">#}
+{#        <div class="row">#}
+{#            <div class="col-md-8 col-md-offset-2">#}
+{#                <h1 class="brand-heading">Pytanie</h1>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row col-lg-12" id="test-options">#}
+{#            {% if next_question_id %}#}
+{#                <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default btn-lg test-option">#}
+{#                    <span class="test-name">#}
+{#                        <h3>{{ question.question_text }}</h3>#}
+{#                    </span>#}
+{#                </a>#}
+{#            {% else %}#}
+{#                <a href="" class="btn btn-default btn-lg test-option">#}
+{#                    <span class="test-name">#}
+{#                        <h3>{{ question.question_text }}</h3>#}
+{#                    </span>#}
+{#                </a>#}
+{#                <h3>KONIEC</h3>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </section>#}
+{% endblock %}
