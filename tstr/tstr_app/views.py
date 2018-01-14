@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib import messages
 from django.shortcuts import render
 import django.db.models
 from tstr.tstr_app.models import Student
@@ -11,6 +12,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from .forms import CustomizedPasswordChange
 
 def index(request):
     return render(request, "home/landing_page.html", {})
@@ -64,21 +66,18 @@ def login_user(request):
 
 @login_required
 def settings(request):
-    errors = []
-    if not request.user.is_superuser:
-        index_nr = Student.objects.get(username=request.user.username).index
-    else:
-        index_nr = ""
+
     if request.method == 'POST':
-        form = PasswordChangeForm(data=request.POST, user=request.user)
+        form = CustomizedPasswordChange(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            return redirect('settings')
+            messages.success(request, 'Hasło zmienione!')
+            return redirect('menu')
         else:
-            errors.append('Wystąpił błąd')
+            messages.error(request, 'Wystąpił błąd. Popraw dane.')
     else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'home/settings.html', {'errors': errors, 'index_nr': index_nr}, {
+        form = CustomizedPasswordChange(request.user)
+    return render(request, 'home/settings.html', {
         'form': form
     })

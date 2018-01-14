@@ -3,6 +3,7 @@
 
 {% block header %}
 {% endblock %}
+
 {% block content %}
 
     <section id="menu" class="container content-section text-center inside-template">
@@ -42,25 +43,11 @@
                 {% endif %}
                 <form method="post">
                     {% csrf_token %}
-
-                    <input type="password" class="input-lg form-control" name="password1" id="password1"
-                           placeholder="Nowe hasło" autocomplete="off">
-                    <div class="row">
-                        <div class="col-sm-6">
-
-                        </div>
-                    </div>
-                    <input type="password" class="input-lg form-control" name="password2" id="password2"
-                           placeholder="Powtórz hasło" autocomplete="off">
-                    <div class="row">
-                        <div class="col-sm-12">
-                        </div>
-                    </div>
+                    {{ form.as_p }}
                     <input type="submit" class="btn btn-default btn-selected btn-lg" data-loading-text="Zmiana hasła..."
                            value="Zapisz zmiany">
                 </form>
             </div><!--/col-sm-6-->
         </div><!--/row-->
-        </div>
     </section>
 {% endblock %}
