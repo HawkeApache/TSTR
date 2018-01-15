@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+    <section id="menu" class="container content-section text-center inside-template">
+
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <p class="text-center">
+                <h2>Twoje dane </h2></p>
+                <h4>Login: {{ user.get_username }} </h4>
+                <h4>Imię: {{ user.first_name }} </h4>
+                <h4>Nazwisko: {{ user.last_name }} </h4>
+                <h5>Nr indeksu: {{ index_nr }} </h5>
+                <div class="row">
+                    <div class="col-sm-6">
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                    </div>
+                </div>
+            </div><!--/col-sm-6-->
+        </div><!--/row-->
+
+
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <p class="text-center">
+                <h2>Zmień hasło </h2> </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" class="btn btn-default btn-selected btn-lg" data-loading-text="Zmiana hasła..."
+                           value="Zapisz zmiany">
+                </form>
+            </div><!--/col-sm-6-->
+        </div><!--/row-->
+    </section>
+{% endblock %}
