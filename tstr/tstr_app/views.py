@@ -1,5 +1,11 @@
+﻿# -*- coding: utf-8 -*-
+from django.contrib import messages
+from django.shortcuts import render
+import django.db.models
+from tstr.tstr_app.models import Student
+from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion
+from django.shortcuts import get_object_or_404
 from django.template import RequestContext
-
 from tstr.tstr_app.models import Student, TeachingGroup, User
 from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress
 from django.contrib.auth import authenticate, login
@@ -7,10 +13,14 @@ from django.shortcuts import render, get_object_or_404, redirect, render_to_resp
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import CustomizedPasswordChange
 from django.utils import timezone
 from django.shortcuts import (
-render_to_response
+    render_to_response
 )
+
 
 def index(request):
     return render(request, "home/landing_page.html", {})
@@ -47,6 +57,29 @@ def login_user(request):
         else:
             errors.append('Niepoprawne dane')
     return render(request, 'home/landing_page.html', {'errors': errors})
+
+
+@login_required
+def settings(request):
+    if not request.user.is_superuser:
+        index_nr = Student.objects.get(username=request.user.username).index
+    else:
+        index_nr = ""
+
+    if request.method == 'POST':
+        form = CustomizedPasswordChange(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Hasło zmienione!')
+            return redirect('menu')
+        else:
+            messages.error(request, 'Wystąpił błąd. Popraw dane.')
+    else:
+        form = CustomizedPasswordChange(request.user)
+    return render(request, 'home/settings.html', {
+        'form': form, 'index_nr': index_nr
+    })
 
 
 # wyswietlam grupy do ktorych nalezy student
@@ -147,7 +180,7 @@ def question(request, test_id, question_id):
     index_of_current_question = 0
     for index, item in enumerate(Test.objects.get(id=test_id).questions.all()):
         if str(item.id) == question_id:
-            index_of_current_question = index+1
+            index_of_current_question = index + 1
 
     # get current question
     question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
@@ -183,7 +216,7 @@ def precise_question_type(question):
         try:
             return question.closedquestion
         except AttributeError:
-                print("spierdoliło sie na amen")
+            print("spierdoliło sie na amen")
 
 
 def end(request):
