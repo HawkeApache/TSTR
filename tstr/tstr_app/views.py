@@ -1,4 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
+import random
+
 from django.contrib import messages
 from django.shortcuts import render
 import django.db.models
@@ -82,14 +84,13 @@ def settings(request):
     })
 
 
-# wyswietlam grupy do ktorych nalezy student
 @login_required
 def users_groups(request):
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     tests = TestInProgress.objects.all().filter(student=current_student)
-    if tests:
-        return begin_tests(request)
+    # if tests:
+    #     return begin_tests(request)
 
     student_username = request.user.username
     group = TeachingGroup.objects.filter(student__username=student_username)
@@ -98,8 +99,6 @@ def users_groups(request):
 
 @login_required
 def tests_for_group(reguest, group_id):
-    # todo sprawdzic czy zalogowany user na pewno ma dostep do tej grupy
-    # w przecinwym przypadku 403
 
     tests = Test.objects.filter(teachinggroup=group_id)
     student = User.objects.get(username=reguest.user.username)
@@ -111,6 +110,8 @@ def tests_for_group(reguest, group_id):
             t.active = False
         else:
             if t.start_time <= current_time <= t.end_time:
+                first_question = random.choice(Question.objects.all().filter(test=t))
+                t.first_question = first_question.id
                 t.active = True
             else:
                 t.active = False
@@ -176,19 +177,29 @@ def question(request, test_id, question_id):
         return redirect('test', test_id, nxt)
 
     # get index of current question and number of all questions
-    number_of_questions = Test.objects.get(id=test_id).questions.all().count()
-    index_of_current_question = 0
-    for index, item in enumerate(Test.objects.get(id=test_id).questions.all()):
-        if str(item.id) == question_id:
-            index_of_current_question = index + 1
-
-    # get current question
-    question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
-    next_question = Test.objects.get(id=test_id).questions.filter(id__gt=question.id).first()
-
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     current_test = Test.objects.get(id=test_id)
+
+    number_of_questions = Test.objects.get(id=test_id).questions.all().count()
+    index_of_current_question = Answer.objects.all().filter(test=current_test, student=current_student).count() + 1
+
+    # get current question
+    question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
+
+    all_answers = Answer.objects.all().filter(test=current_test, student=current_student)
+    print("uzupelnione ", all_answers.__len__())
+    questions_ids = [x.question.id for x in all_answers]
+    questions_ids.append(question_id)
+
+    try:
+        cos = Test.objects.get(id=test_id).questions.all().exclude(id__in=questions_ids)
+        print(cos, cos.__len__())
+        next_question = random.choice(cos)
+    except IndexError:
+        next_question = ""
+
+
     in_progress, created = TestInProgress.objects.get_or_create(student=current_student, test=current_test)
     in_progress.question = question
     in_progress.save()
