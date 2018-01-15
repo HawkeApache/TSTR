@@ -7,3 +7,12 @@ from tstr.tstr_app.models import *
 #             tr = TestResult.objects.get(student=answer.student, test=answer.test)
 #             tr.score = int(tr.score) + 1
 #             tr.save()
+
+def precise_question_type(q):
+    try:
+        return q.openquestion
+    except AttributeError:
+        try:
+            return q.closedquestion
+        except AttributeError:
+            print("spierdoliło sie na amen")

@@ -2,26 +2,18 @@
 import random
 
 from django.contrib import messages
-from django.shortcuts import render
-import django.db.models
-from tstr.tstr_app.models import Student
-from tstr.tstr_app.models import Question, OpenQuestion, ClosedQuestion
-from django.shortcuts import get_object_or_404
-from django.template import RequestContext
-from tstr.tstr_app.models import Student, TeachingGroup, User
-from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, get_object_or_404, redirect, render_to_response
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
-from .forms import CustomizedPasswordChange
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
-from django.shortcuts import (
-    render_to_response
-)
+
+from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress, Student, \
+    TeachingGroup, User
+from tstr.tstr_app.utils import precise_question_type
+from .forms import CustomizedPasswordChange
 
 
 def index(request):
@@ -89,8 +81,8 @@ def users_groups(request):
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     tests = TestInProgress.objects.all().filter(student=current_student)
-    # if tests:
-    #     return begin_tests(request)
+    if tests:
+        return begin_tests(request)
 
     student_username = request.user.username
     group = TeachingGroup.objects.filter(student__username=student_username)
@@ -99,7 +91,6 @@ def users_groups(request):
 
 @login_required
 def tests_for_group(reguest, group_id):
-
     tests = Test.objects.filter(teachinggroup=group_id)
     student = User.objects.get(username=reguest.user.username)
     test_results = Test.objects.filter(testresult__student=student)
@@ -121,11 +112,13 @@ def tests_for_group(reguest, group_id):
 
 @login_required
 def question(request, test_id, question_id):
+    # get necessary information
+    current_user = request.user.username
+    current_student = User.objects.get(username=current_user).student
+    current_test = Test.objects.get(id=test_id)
+
     # post handler
     if request.method == "POST":
-        current_user = request.user.username
-        current_student = User.objects.get(username=current_user).student
-        current_test = Test.objects.get(id=test_id)
         current_question = Question.objects.get(id=question_id)
         current_time = timezone.now()
 
@@ -143,7 +136,7 @@ def question(request, test_id, question_id):
             answer.save()
 
             nxt = request.POST.get('open')
-            if not nxt:
+            if not nxt or current_test.end_time <= current_time:
                 test_result = TestResult.objects.create(
                     max_score=Test.objects.get(id=test_id).questions.all().count(),
                     score=0,
@@ -162,7 +155,7 @@ def question(request, test_id, question_id):
             answer.save()
 
             nxt = request.POST.get('close')
-            if not nxt:
+            if not nxt or current_test.end_time <= current_time:
                 test_result = TestResult.objects.create(
                     max_score=Test.objects.get(id=test_id).questions.all().count(),
                     score=0,
@@ -177,61 +170,46 @@ def question(request, test_id, question_id):
         return redirect('test', test_id, nxt)
 
     # get index of current question and number of all questions
-    current_user = request.user.username
-    current_student = User.objects.get(username=current_user).student
-    current_test = Test.objects.get(id=test_id)
-
     number_of_questions = Test.objects.get(id=test_id).questions.all().count()
     index_of_current_question = Answer.objects.all().filter(test=current_test, student=current_student).count() + 1
 
     # get current question
-    question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
+    current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
 
+    # get next question id randomly
     all_answers = Answer.objects.all().filter(test=current_test, student=current_student)
-    print("uzupelnione ", all_answers.__len__())
     questions_ids = [x.question.id for x in all_answers]
     questions_ids.append(question_id)
 
     try:
-        cos = Test.objects.get(id=test_id).questions.all().exclude(id__in=questions_ids)
-        print(cos, cos.__len__())
-        next_question = random.choice(cos)
+        available_questions = Test.objects.get(id=test_id).questions.all().exclude(id__in=questions_ids)
+        next_question = random.choice(available_questions)
     except IndexError:
         next_question = ""
 
-
+    # save current test state
     in_progress, created = TestInProgress.objects.get_or_create(student=current_student, test=current_test)
-    in_progress.question = question
+    in_progress.question = current_question
     in_progress.save()
 
-
-    # if ClosedQuestion
+    # prepare possible answers if ClosedQuestion
     answers = []
-    if isinstance(question, ClosedQuestion):
-        answers = question.answers.split("&")
+    if isinstance(current_question, ClosedQuestion):
+        answers = current_question.answers.split("&")
 
     return render(request, "home/test.html",
                   {"number": index_of_current_question,
                    "all": number_of_questions,
-                   "question": question,
+                   "question": current_question,
                    "answers": answers,
-                   "question_type": str(question.__class__.__name__),
+                   "question_type": str(current_question.__class__.__name__),
                    "next_question_id": next_question if not next_question else next_question.id,
                    "test_id": test_id})
 
 
-def precise_question_type(question):
-    try:
-        return question.openquestion
-    except AttributeError:
-        try:
-            return question.closedquestion
-        except AttributeError:
-            print("spierdoliło sie na amen")
-
-
 def end(request):
     return render(request, "home/end.html", {})
+
 
 @login_required
 def begin_tests(request):
@@ -241,7 +219,6 @@ def begin_tests(request):
     tests = TestInProgress.objects.all().filter(student=current_student)
 
     return render(request, "home/begin_tests.html", {"tests": tests})
-
 
 
 def error404(request):
