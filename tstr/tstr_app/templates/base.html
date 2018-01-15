@@ -44,7 +44,7 @@
 
                 {% if user.is_authenticated %}
                     <li>
-                        <a class="page-scroll">Witaj, {{ user.get_username }}</a>
+                        <a class="page-scroll" href="/menu">Witaj, {{ user.get_username }}</a>
                     </li>
                 {% else %}
                     <li>

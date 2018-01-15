@@ -471,3 +471,7 @@ body {
 #question-answers {
     margin-top: 15px;
 }
+
+.inside-template {
+    min-height: 650px;
+}
