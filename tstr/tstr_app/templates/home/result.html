@@ -8,63 +8,58 @@
     <!-- Open Question -->
 
     <section id="quesion" class="container content-section text-center inside-template">
-        {#        <div class="row">#}
-        {#            <div class="col-md-8 col-md-offset-2">#}
-        {#                <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>#}
-        {#            </div>#}
-        {#        </div>#}
-
-        <h1 >
+        <h1>
+            Test: {{ test_name }}
+        </h1>
+        <h1>
             Twój wynik: {{ score }} na {{ max_score }}
         </h1>
-        {% for question in answers %}
-            <h3 class="brand-heading">Pytanie {{ forloop.counter }} z {{ all }}</h3>
-            <p>
-                {{ question.question.question_text }}
-            </p>
-            <p >
-                {{ question.answer }}
-            </p>
-            <p >
-                {{ question.is_correct }}
-            </p>
-{#            {% if not question.is_correct %}#}
-            <p >
-                {{ correct }}
-            </p>
-{#            {% endif %}#}
 
+        {% for question in test %}
+            <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
+                Pytanie {{ forloop.counter }}: {{ question.question_text }}
+            </label>
+
+            {% ifequal question.type_of_q "OpenQuestion" %}
+                 <div class="col-md-8 col-md-offset-2" id="question-input">
+                     Twoja odpowiedź
+                <textarea class="form-control" id="question_input" rows="4" disabled>
+                    {{ question.student_answer }}
+                </textarea>
+                </div>
+                 <div class="col-md-8 col-md-offset-2" id="question-input">
+                     Poprawna odpowiedź
+                    <textarea class="form-control" id="question_input" rows="4" disabled>
+                        {{ question.correct }}
+                    </textarea>
+                 </div>
+
+            {% else %}
+                <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers"
+                     data-toggle="buttons" >
+                    {% for a in question.all_answers %}
+{#                            tak działa#}
+                            {% if forloop.counter0 == question.correct%}
+                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" >
+                                <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off">
+                                {{ a }}
+                            </label>
+{#                                a tak już nie:#}
+{#                                {% if forloop.counter0 == question.student_answer%}#}
+{#                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" >#}
+{#                                <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off">#}
+{#                                {{ a }}#}
+{#                            </label>#}
+
+                            {% endif %}
+
+                    {% endfor %}
+                </div>
+
+            {% endifequal %}
 
         {% endfor %}
 
-
-
     </section>
 
-
-
-    {#    <!-- Menu Section -->#}
-    {#    <section id="menu" class="container content-section text-center inside-template">#}
-    {#        <div class="row">#}
-    {#            <div class="col-md-8 col-md-offset-2">#}
-    {#                <h1 class="brand-heading">Pytanie</h1>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#        <div class="row col-lg-12" id="test-options">#}
-    {#            {% if next_question_id %}#}
-    {#                <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default btn-lg test-option">#}
-    {#                    <span class="test-name">#}
-    {#                        <h3>{{ question.question_text }}</h3>#}
-    {#                    </span>#}
-    {#                </a>#}
-    {#            {% else %}#}
-    {#                <a href="" class="btn btn-default btn-lg test-option">#}
-    {#                    <span class="test-name">#}
-    {#                        <h3>{{ question.question_text }}</h3>#}
-    {#                    </span>#}
-    {#                </a>#}
-    {#                <h3>KONIEC</h3>#}
-    {#            {% endif %}#}
-    {#        </div>#}
-    {#    </section>#}
 {% endblock %}

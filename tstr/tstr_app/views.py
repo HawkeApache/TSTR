@@ -1,6 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
 import random
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import update_session_auth_hash
@@ -11,9 +10,11 @@ from django.urls import reverse
 from django.utils import timezone
 
 from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress, Student, \
-    TeachingGroup, User
+    TeachingGroup, User, OpenQuestion
 from tstr.tstr_app.utils import precise_question_type
 from .forms import CustomizedPasswordChange
+
+
 
 
 def index(request):
@@ -66,7 +67,7 @@ def settings(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Hasło zmienione!')
-            return redirect('menu')
+            return redirect('settings')
         else:
             messages.error(request, 'Wystąpił błąd. Popraw dane.')
     else:
@@ -245,9 +246,10 @@ def closed_for_group(request, group_id):
 
     for t in tests:
         if t in test_results:
+            scores = TestResult.objects.all().get(student=student, test=t)
             t.active = False
-
-
+            t.score = scores.score
+            t.max = scores.max_score
         else:
             if t.start_time <= current_time <= t.end_time:
                 t.active = True
@@ -264,20 +266,34 @@ def result(request, test_id):
     # get necessary information
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
+
     current_test = Test.objects.get(id=test_id)
-    current_test_name = current_test.test_name
-    current_test_questions = current_test.questions.all()
-    current_test_answers_all = Answer.objects.all().filter(test=current_test, student=current_student)
-    current_result = TestResult.objects.get(student=current_student, test=test_id)
+    test_name = current_test.test_name
+    questions_in_test = current_test.questions.all()
+    answers_all = Answer.objects.all().filter(test=current_test, student=current_student)
+    results = TestResult.objects.get(student=current_student, test=test_id)
     number_of_questions = Test.objects.get(id=test_id).questions.all().count()
 
+    for q in questions_in_test:
+        current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=q.id))
+        q.type_of_q = str(current_question.__class__.__name__)
+        if q.type_of_q == "ClosedQuestion":
+            q.correct = ClosedQuestion.objects.get(id=q.id).correct_answer
+            q.all_answers = []
+            q.all_answers = ClosedQuestion.objects.get(id=q.id).answers.split("&")
+            q.student_answer = answers_all.get(question=q.id).answer
+
+        else:
+            q.correct = OpenQuestion.objects.get(id=q.id).correct_answer
+            q.student_answer = answers_all.get(question=q.id).answer
+
+        print(q.student_answer)
+        print(q.correct)
+
     return render(request, "home/result.html",
-                  {"test_id": test_id, "test_name": current_test_name,
-                   "test": current_test_questions,
-                   "answers": current_test_answers_all,
-                   "score": current_result.score,
-                   "max_score": current_result.max_score,
-                   "all": number_of_questions
+                  {"test_name": test_name,
+                   "test": questions_in_test,
+                   "score": results.score,
+                   "max_score": results.max_score,
+                   "all": number_of_questions,
                    })
-
-
