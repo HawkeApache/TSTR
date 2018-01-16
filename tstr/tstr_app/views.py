@@ -227,3 +227,57 @@ def error404(request):
 
 def error500(request):
     return render(request, "home/500.html", {})
+
+
+@login_required
+def finished(request):
+    student_username = request.user.username
+    group = TeachingGroup.objects.filter(student__username=student_username)
+    return render(request, "home/groups_fin.html", {"groups": group, "title": "Twoje grupy"})
+
+
+@login_required
+def closed_for_group(request, group_id):
+    tests = Test.objects.filter(teachinggroup=group_id)
+    student = User.objects.get(username=request.user.username)
+    test_results = Test.objects.filter(testresult__student=student)
+    current_time = timezone.now()
+
+    for t in tests:
+        if t in test_results:
+            t.active = False
+
+
+        else:
+            if t.start_time <= current_time <= t.end_time:
+                t.active = True
+            else:
+                t.active = False
+
+    return render(request, "home/finished_tests.html", {"tests": tests,
+                                                        "title": "Zakończone testy twojej grupy"
+                                                        })
+
+
+@login_required
+def result(request, test_id):
+    # get necessary information
+    current_user = request.user.username
+    current_student = User.objects.get(username=current_user).student
+    current_test = Test.objects.get(id=test_id)
+    current_test_name = current_test.test_name
+    current_test_questions = current_test.questions.all()
+    current_test_answers_all = Answer.objects.all().filter(test=current_test, student=current_student)
+    current_result = TestResult.objects.get(student=current_student, test=test_id)
+    number_of_questions = Test.objects.get(id=test_id).questions.all().count()
+
+    return render(request, "home/result.html",
+                  {"test_id": test_id, "test_name": current_test_name,
+                   "test": current_test_questions,
+                   "answers": current_test_answers_all,
+                   "score": current_result.score,
+                   "max_score": current_result.max_score,
+                   "all": number_of_questions
+                   })
+
+

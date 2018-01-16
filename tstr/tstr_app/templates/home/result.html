@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <!-- Open Question -->
+
+    <section id="quesion" class="container content-section text-center inside-template">
+        {#        <div class="row">#}
+        {#            <div class="col-md-8 col-md-offset-2">#}
+        {#                <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>#}
+        {#            </div>#}
+        {#        </div>#}
+
+        <h1 >
+            Twój wynik: {{ score }} na {{ max_score }}
+        </h1>
+        {% for question in answers %}
+            <h3 class="brand-heading">Pytanie {{ forloop.counter }} z {{ all }}</h3>
+            <p>
+                {{ question.question.question_text }}
+            </p>
+            <p >
+                {{ question.answer }}
+            </p>
+            <p >
+                {{ question.is_correct }}
+            </p>
+{#            {% if not question.is_correct %}#}
+            <p >
+                {{ correct }}
+            </p>
+{#            {% endif %}#}
+
+
+        {% endfor %}
+
+
+
+    </section>
+
+
+
+    {#    <!-- Menu Section -->#}
+    {#    <section id="menu" class="container content-section text-center inside-template">#}
+    {#        <div class="row">#}
+    {#            <div class="col-md-8 col-md-offset-2">#}
+    {#                <h1 class="brand-heading">Pytanie</h1>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="row col-lg-12" id="test-options">#}
+    {#            {% if next_question_id %}#}
+    {#                <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default btn-lg test-option">#}
+    {#                    <span class="test-name">#}
+    {#                        <h3>{{ question.question_text }}</h3>#}
+    {#                    </span>#}
+    {#                </a>#}
+    {#            {% else %}#}
+    {#                <a href="" class="btn btn-default btn-lg test-option">#}
+    {#                    <span class="test-name">#}
+    {#                        <h3>{{ question.question_text }}</h3>#}
+    {#                    </span>#}
+    {#                </a>#}
+    {#                <h3>KONIEC</h3>#}
+    {#            {% endif %}#}
+    {#        </div>#}
+    {#    </section>#}
+{% endblock %}
