@@ -66,7 +66,7 @@ def settings(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Hasło zmienione!')
-            return redirect('menu')
+            return redirect('settings')
         else:
             messages.error(request, 'Wystąpił błąd. Popraw dane.')
     else:
