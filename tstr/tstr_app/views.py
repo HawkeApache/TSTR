@@ -278,17 +278,13 @@ def result(request, test_id):
         current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=q.id))
         q.type_of_q = str(current_question.__class__.__name__)
         if q.type_of_q == "ClosedQuestion":
-            q.correct = ClosedQuestion.objects.get(id=q.id).correct_answer
-            q.all_answers = []
-            q.all_answers = ClosedQuestion.objects.get(id=q.id).answers.split("&")
-            q.student_answer = answers_all.get(question=q.id).answer
+            q.all_answers = current_question.answers.split("&")
+            q.correct = int(current_question.correct_answer)
+            q.student_answer = int(answers_all.get(question=q.id).answer)
 
         else:
-            q.correct = OpenQuestion.objects.get(id=q.id).correct_answer
+            q.correct = current_question.correct_answer
             q.student_answer = answers_all.get(question=q.id).answer
-
-        print(q.student_answer)
-        print(q.correct)
 
     return render(request, "home/result.html",
                   {"test_name": test_name,

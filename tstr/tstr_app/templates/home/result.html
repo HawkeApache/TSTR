@@ -38,20 +38,19 @@
                 <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers"
                      data-toggle="buttons" >
                     {% for a in question.all_answers %}
-{#                            tak działa#}
-                            {% if forloop.counter0 == question.correct%}
-                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" >
-                                <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off">
-                                {{ a }}
-                            </label>
-{#                                a tak już nie:#}
-{#                                {% if forloop.counter0 == question.student_answer%}#}
-{#                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" >#}
-{#                                <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off">#}
-{#                                {{ a }}#}
-{#                            </label>#}
 
-                            {% endif %}
+                        <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" disabled>
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                                   autocomplete="off">
+
+                            {% ifequal forloop.counter0 question.correct %}
+                                Poprawna:
+                            {% endifequal %}
+                            {% ifequal forloop.counter0 question.student_answer %}
+                                Zaznaczona:
+                            {% endifequal %}
+                            {{ a }}
+                        </label>
 
                     {% endfor %}
                 </div>
