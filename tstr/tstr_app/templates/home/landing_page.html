@@ -12,7 +12,7 @@
                         <p class="intro-text">Oszczędzaj czas i ucz się efektywniej!
                             <br>Przeprowadzaj kolokwia online</p>
                          {% if user.is_authenticated %}
-                            <a href="menu" class="btn btn-selected btn-lg">Menu</a>
+                            <a href="{% url 'menu' %}" class="btn btn-selected btn-lg">Menu</a>
                     {% else %}
                         <a href="" class="btn btn-default btn-default-black btn-lg">Załóż konto</a>
                         <a href="#login" class="btn btn-selected btn-lg">Zaloguj się</a>

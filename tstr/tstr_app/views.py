@@ -1,6 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
 import random
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import update_session_auth_hash
@@ -11,7 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress, Student, \
-    TeachingGroup, User
+    TeachingGroup, User, OpenQuestion
 from tstr.tstr_app.utils import precise_question_type
 from .forms import CustomizedPasswordChange
 
@@ -66,7 +65,7 @@ def settings(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Hasło zmienione!')
-            return redirect('menu')
+            return redirect('settings')
         else:
             messages.error(request, 'Wystąpił błąd. Popraw dane.')
     else:
@@ -227,3 +226,67 @@ def error404(request):
 
 def error500(request):
     return render(request, "home/500.html", {})
+
+
+@login_required
+def finished(request):
+    student_username = request.user.username
+    group = TeachingGroup.objects.filter(student__username=student_username)
+    return render(request, "home/groups_fin.html", {"groups": group, "title": "Twoje grupy"})
+
+
+@login_required
+def closed_for_group(request, group_id):
+    tests = Test.objects.filter(teachinggroup=group_id)
+    student = User.objects.get(username=request.user.username)
+    test_results = Test.objects.filter(testresult__student=student)
+    current_time = timezone.now()
+
+    for t in tests:
+        if t in test_results:
+            scores = TestResult.objects.all().get(student=student, test=t)
+            t.active = False
+            t.score = scores.score
+            t.max = scores.max_score
+        else:
+            if t.start_time <= current_time <= t.end_time:
+                t.active = True
+            else:
+                t.active = False
+
+    return render(request, "home/finished_tests.html", {"tests": tests,
+                                                        "title": "Zakończone testy twojej grupy"
+                                                        })
+
+
+@login_required
+def result(request, test_id):
+    current_user = request.user.username
+    current_student = User.objects.get(username=current_user).student
+    current_test = Test.objects.get(id=test_id)
+    test_name = current_test.test_name
+    questions_in_test = current_test.questions.all()
+    answers_all = Answer.objects.all().filter(test=current_test, student=current_student)
+    results = TestResult.objects.get(student=current_student, test=test_id)
+    number_of_questions = Test.objects.get(id=test_id).questions.all().count()
+
+    for q in questions_in_test:
+        current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=q.id))
+        q.type_of_q = str(current_question.__class__.__name__)
+        if q.type_of_q == "ClosedQuestion":
+            q.all_answers = current_question.answers.split("&")
+            q.correct = int(current_question.correct_answer)
+            q.student_answer = int(answers_all.get(question=q.id).answer)
+
+        else:
+            q.correct = current_question.correct_answer
+            q.student_answer = answers_all.get(question=q.id).answer
+            q.is_correct = answers_all.get(question=q.id).is_correct
+
+    return render(request, "home/result.html",
+                  {"test_name": test_name,
+                   "test": questions_in_test,
+                   "score": results.score,
+                   "max_score": results.max_score,
+                   "all": number_of_questions,
+                   })
