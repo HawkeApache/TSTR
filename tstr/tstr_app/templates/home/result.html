@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+
+    <section id="quesion" class="container content-section text-center inside-template">
+        <h1>
+            Test: {{ test_name }}
+        </h1>
+        <h1>
+            Twój wynik: {{ score }} na {{ max_score }}
+        </h1>
+
+        {% for question in test %}
+            <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
+                Pytanie {{ forloop.counter }}: {{ question.question_text }}
+            </label>
+
+            {% ifequal question.type_of_q "OpenQuestion" %}
+                 <div class="col-md-8 col-md-offset-2 " id="question-input">
+                     Twoja odpowiedź
+                     {% if question.is_correct %}
+                    <textarea class="form-control open_correct" id="question_input" rows="2" readonly>
+                        {{ question.student_answer }}
+                    </textarea>
+                     {% else %}
+                     <textarea class="form-control open_incorrect" id="question_input" rows="2" readonly>
+                            {{ question.student_answer }}
+                     </textarea>
+                    {% endif %}
+                </div>
+                 <div class="col-md-8 col-md-offset-2" id="question-input">
+                     Przykładowa poprawna odpowiedź
+                    <textarea class="form-control" id="question_input" rows="2" readonly>
+                        {{ question.correct }}
+                    </textarea>
+                 </div>
+
+            {% else %}
+                <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers"
+                     data-toggle="buttons" >
+                    {% for a in question.all_answers %}
+                          <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" >
+                              <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                                   autocomplete="off">
+                              {% if forloop.counter0 == question.correct and forloop.counter0 == question.student_answer%}
+                                <div class="mymark_correct" >{{ a }}</div>
+                              {% else %}
+                                  {% ifequal forloop.counter0 question.correct %}
+                                   <div class="mymark_correct" >{{ a }}</div>
+                                  {% else %}
+                                     {% ifequal forloop.counter0 question.student_answer %}
+                                         <div class="mymark_incorrect" >{{ a }}</div>
+                                     {% else %}
+                                        {{ a }}
+                                     {% endifequal %}
+                                  {% endifequal %}
+                              {% endif %}
+                         </label>
+                    {% endfor %}
+                </div>
+            {% endifequal %}
+        {% endfor %}
+    </section>
+{% endblock %}

@@ -29,7 +29,10 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^settings', views.settings, name='settings'),
     url(r'^test/(?P<test_id>[0-9a-f-]+)/(?P<question_id>[0-9a-f-]+)', views.question, name='test'),
-    url(r'^end', views.end, name="end")
+    url(r'^end', views.end, name="end"),
+    url(r'^finished', views.finished, name='finished'),
+    url(r'^closed_for_group/(?P<group_id>\d+)', views.closed_for_group, name='closed_for_group'),
+    url(r'^result/(?P<test_id>[0-9a-f-]+)', views.result, name='result')
 ]
 
 handler404 = views.error404
