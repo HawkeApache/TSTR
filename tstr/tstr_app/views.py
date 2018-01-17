@@ -15,8 +15,6 @@ from tstr.tstr_app.utils import precise_question_type
 from .forms import CustomizedPasswordChange
 
 
-
-
 def index(request):
     return render(request, "home/landing_page.html", {})
 
@@ -263,10 +261,8 @@ def closed_for_group(request, group_id):
 
 @login_required
 def result(request, test_id):
-    # get necessary information
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
-
     current_test = Test.objects.get(id=test_id)
     test_name = current_test.test_name
     questions_in_test = current_test.questions.all()
@@ -278,17 +274,14 @@ def result(request, test_id):
         current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=q.id))
         q.type_of_q = str(current_question.__class__.__name__)
         if q.type_of_q == "ClosedQuestion":
-            q.correct = ClosedQuestion.objects.get(id=q.id).correct_answer
-            q.all_answers = []
-            q.all_answers = ClosedQuestion.objects.get(id=q.id).answers.split("&")
-            q.student_answer = answers_all.get(question=q.id).answer
+            q.all_answers = current_question.answers.split("&")
+            q.correct = int(current_question.correct_answer)
+            q.student_answer = int(answers_all.get(question=q.id).answer)
 
         else:
-            q.correct = OpenQuestion.objects.get(id=q.id).correct_answer
+            q.correct = current_question.correct_answer
             q.student_answer = answers_all.get(question=q.id).answer
-
-        print(q.student_answer)
-        print(q.correct)
+            q.is_correct = answers_all.get(question=q.id).is_correct
 
     return render(request, "home/result.html",
                   {"test_name": test_name,
