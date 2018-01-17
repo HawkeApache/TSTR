@@ -471,3 +471,35 @@ body {
 #question-answers {
     margin-top: 15px;
 }
+
+.mymark_correct {
+    background-color: limegreen;
+    color: black;
+}
+
+.mymark_incorrect {
+    background-color: darkred;
+    color: black;
+}
+
+.open_correct {
+    border: 1px solid limegreen;
+}
+
+.open_incorrect {
+    border: 1px solid darkred;
+}
+
+.mymodal-body {
+    border: 1px solid #42DCA3;
+    background: black;
+}
+
+.modal-header {
+    border-bottom: 1px solid #42DCA3;
+
+}
+
+.modal-footer {
+    border-top: 1px solid #42DCA3;
+}

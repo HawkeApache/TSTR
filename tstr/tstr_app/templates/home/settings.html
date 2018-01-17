@@ -6,24 +6,6 @@
 
 {% block content %}
 
-    <style>
-        .mymodal-body{
-            border: 1px solid #42DCA3;
-            background: black;
-        }
-
-        .modal-header{
-            border-bottom: 1px solid #42DCA3;
-
-        }
-
-        .modal-footer{
-            border-top: 1px solid #42DCA3;
-        }
-
-
-    </style>
-
     <section id="menu" class="container content-section text-center inside-template">
 
         <!-- Modal -->
@@ -92,9 +74,9 @@
         </div><!--/row-->
     </section>
 
+
     <script>
         {% if messages %}
-            console.log({{  messages.0 }})
             $('#myModal').modal('show');
         {% endif %}
     </script>
