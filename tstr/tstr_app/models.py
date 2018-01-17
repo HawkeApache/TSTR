@@ -61,7 +61,6 @@ class TeachingGroup(models.Model):
         return self.name
 
 
-# todo czy na pewno takie relacje??
 class Answer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
@@ -74,8 +73,8 @@ class Answer(models.Model):
 class TestResult(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    max_score = models.IntegerField()
-    score = models.IntegerField()
+    max_score = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ('student', 'test')

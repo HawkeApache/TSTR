@@ -15,4 +15,4 @@ def precise_question_type(q):
         try:
             return q.closedquestion
         except AttributeError:
-            print("spierdoliło sie na amen")
+            print("Attribute error in precise question type")

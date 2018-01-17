@@ -472,6 +472,11 @@ body {
     margin-top: 15px;
 }
 
+
+.inside-template {
+    min-height: 650px;
+}
+
 .mymark_correct {
     background-color: limegreen;
     color: black;
@@ -502,4 +507,5 @@ body {
 
 .modal-footer {
     border-top: 1px solid #42DCA3;
+
 }
