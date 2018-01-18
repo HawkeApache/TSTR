@@ -19,6 +19,15 @@
           type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{% static "css/grayscale.css" %}"/>
+
+    <!-- Codemirror -->
+    <link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+    <link rel="stylesheet" href="{% static 'codemirror/theme/base16-dark.css' %}">
+    <script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+    <script src="{% static 'codemirror/addon/edit/matchbrackets.js' %}"></script>
+    <script src="{% static 'codemirror/mode/python/python.js' %}"></script>
+
+
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
@@ -69,6 +78,8 @@
     </div>
     <!-- /.container -->
 </nav>
+
+
 
 {% block header %}
 {% endblock %}

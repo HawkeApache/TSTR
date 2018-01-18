@@ -64,15 +64,6 @@
         </form>
     </section>
 
-
-    <link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
-    <link rel="stylesheet" href="{% static 'codemirror/theme/base16-dark.css' %}">
-    <script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
-    <script src="{% static 'codemirror/addon/edit/matchbrackets.js' %}"></script>
-    <script src="{% static 'codemirror/mode/python/python.js' %}"></script>
-
-
-
     <script>
         var editor = CodeMirror.fromTextArea(document.getElementById("question_input"), {
             mode: {
