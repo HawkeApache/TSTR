@@ -7,25 +7,6 @@
 
     <!-- Open Question -->
 
-    <style>
-        .CodeMirror {
-            background: black !important;
-            border: 1px solid #42DCA3 !important;
-            text-align: left !important;
-        }
-
-        .CodeMirror-gutters {
-            background: black !important;
-            border-right: 1px solid #42DCA3 !important;
-        }
-
-        .CodeMirror-cursor {
-            border-left: 1px solid white !important;
-        }
-
-
-    </style>
-
     <section id="quesion" class="container content-section text-center inside-template">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -85,7 +66,7 @@
 
 
     <link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
-    <link rel="stylesheet" href="{% static 'codemirror/theme/3024-night.css' %}">
+    <link rel="stylesheet" href="{% static 'codemirror/theme/base16-dark.css' %}">
     <script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
     <script src="{% static 'codemirror/addon/edit/matchbrackets.js' %}"></script>
     <script src="{% static 'codemirror/mode/python/python.js' %}"></script>
@@ -99,10 +80,10 @@
                 version: 3,
                 singleLineStringErrors: false
             },
-            theme: "3024-night",
+            theme: "base16-dark",
             lineNumbers: true,
             indentUnit: 4,
-            matchBrackets: true,
+            matchBrackets: true
         });
 
     </script>

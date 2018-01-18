@@ -552,3 +552,13 @@ body {
 .password-form .btn-lg {
     float: right;
 }
+
+/*css for code coloring*/
+.CodeMirror {
+    border: 1px solid #42DCA3 !important;
+    text-align: left !important;
+}
+
+.CodeMirror-gutters {
+    border-right: 1px solid #42DCA3 !important;
+}
