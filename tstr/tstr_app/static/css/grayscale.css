@@ -318,13 +318,13 @@ a:focus {
     color: black;
 }
 
-.btn-selected:hover {
+.btn-selected:not(.nohover):hover {
     border: 1px solid #42DCA3;
     outline: none;
     background-color: #5cb292;
 }
 
-.btn-default:hover,
+.btn-default:not(.nohover):hover,
 .btn-default:focus {
     border: 1px solid #42DCA3;
     outline: none;
@@ -439,7 +439,7 @@ body {
     margin-bottom: 0;
 }
 
-.test-option:hover {
+.test-option:not(.nohover):hover {
     color: black;
 }
 
@@ -456,6 +456,18 @@ body {
     font-size: 20px;
 }
 
+#question-text-label {
+    text-align: left;
+    font-size: 20px;
+    margin-top: 35px;
+}
+
+#question-text {
+    text-align: left;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
 .question-option {
     margin: 10px;
     font-size: 15px;
@@ -464,7 +476,7 @@ body {
     background-color: #0d0d0d;
 }
 
-.question-option:hover {
+.question-option:not(.nohover):hover {
     background-color:white;
 }
 
@@ -481,6 +493,7 @@ body {
     background-color: limegreen;
     color: black;
 }
+
 
 .mymark_incorrect {
     background-color: darkred;
@@ -507,5 +520,35 @@ body {
 
 .modal-footer {
     border-top: 1px solid #42DCA3;
+}
 
+#question-text-additional {
+    font-size: 12px;
+    text-align: left;
+    margin-top: 25px;
+    margin-bottom: 5px;
+}
+
+#question_output_textarea {
+    margin-top: 5px;
+    background-color: #1d1d1d;
+    color: white;
+    padding: 5%;
+    overflow: hidden;
+}
+
+.question-option:hover {
+    background-color: transparent;
+}
+
+.personal-data {
+    text-align: left;
+}
+
+.password-form {
+    text-align: left;
+}
+
+.password-form .btn-lg {
+    float: right;
 }

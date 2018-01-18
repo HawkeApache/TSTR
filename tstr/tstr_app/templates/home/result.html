@@ -5,60 +5,67 @@
 {% endblock %}
 {% block content %}
 
-    <section id="quesion" class="container content-section text-center inside-template">
+    <section id="question" class="container content-section text-center inside-template">
         <h1>
             Test: {{ test_name }}
         </h1>
-        <h1>
+        <h3>
             Twój wynik: {{ score }} na {{ max_score }}
-        </h1>
+        </h3>
 
         {% for question in test %}
-            <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text">
-                Pytanie {{ forloop.counter }}: {{ question.question_text }}
+            <label for="question_input" class="row col-md-8 col-md-offset-2 form-group" id="question-text-label">
+                Pytanie {{ forloop.counter }}:
             </label>
+            <div class="row col-md-8 col-md-offset-2 form-group" id="question-text">{{ question.question_text }}</div>
+
 
             {% ifequal question.type_of_q "OpenQuestion" %}
-                 <div class="col-md-8 col-md-offset-2 " id="question-input">
-                     Twoja odpowiedź
-                     {% if question.is_correct %}
-                    <textarea class="form-control open_correct" id="question_input" rows="2" readonly>
+                <div class="col-md-8 col-md-offset-2 ">
+                    <div id="question-text-additional">Twoja odpowiedź</div>
+                    {% if question.is_correct %}
+                        <textarea class="form-control open_correct" id="question_output_textarea" rows="2" readonly>
                         {{ question.student_answer }}
                     </textarea>
-                     {% else %}
-                     <textarea class="form-control open_incorrect" id="question_input" rows="2" readonly>
+                    {% else %}
+                        <textarea class="form-control open_incorrect" id="question_output_textarea" rows="2" readonly>
                             {{ question.student_answer }}
                      </textarea>
                     {% endif %}
                 </div>
-                 <div class="col-md-8 col-md-offset-2" id="question-input">
-                     Przykładowa poprawna odpowiedź
-                    <textarea class="form-control" id="question_input" rows="2" readonly>
+                <div class="col-md-8 col-md-offset-2" >
+                    <div id="question-text-additional">Przykładowa poprawna odpowiedź</div>
+                    <textarea class="form-control" id="question_output_textarea" rows="2" readonly>
                         {{ question.correct }}
                     </textarea>
-                 </div>
+                </div>
 
             {% else %}
                 <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers"
-                     data-toggle="buttons" >
+                     data-toggle="buttons">
                     {% for a in question.all_answers %}
-                          <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option" >
-                              <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                        {% if forloop.counter0 == question.student_answer and forloop.counter0 == question.correct %}
+                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option mymark_correct nohover">
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
                                    autocomplete="off">
-                              {% if forloop.counter0 == question.correct and forloop.counter0 == question.student_answer%}
-                                <div class="mymark_correct" >{{ a }}</div>
-                              {% else %}
-                                  {% ifequal forloop.counter0 question.correct %}
-                                   <div class="mymark_correct" >{{ a }}</div>
-                                  {% else %}
-                                     {% ifequal forloop.counter0 question.student_answer %}
-                                         <div class="mymark_incorrect" >{{ a }}</div>
-                                     {% else %}
-                                        {{ a }}
-                                     {% endifequal %}
-                                  {% endifequal %}
-                              {% endif %}
-                         </label>
+                            <div class="mymark_correct">{{ a }}</div>
+                        {% elif forloop.counter0 == question.student_answer %}
+                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option mymark_incorrect">
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                                   autocomplete="off">
+                            <div class="mymark_incorrect">{{ a }}</div>
+                        {% elif forloop.counter0 == question.correct %}
+                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option mymark_correct">
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                                   autocomplete="off">
+                            <div class="mymark_correct">{{ a }}</div>
+                        {% else %}
+                            <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                                   autocomplete="off">
+                            {{ a }}
+                        {% endif %}
+                    </label>
                     {% endfor %}
                 </div>
             {% endifequal %}
