@@ -65,6 +65,41 @@
     </section>
 
 
+{#<link rel="stylesheet" href="../../lib/codemirror.css">#}
+{#<script src="../../lib/codemirror.js"></script>#}
+{#<script src="../../addon/edit/matchbrackets.js"></script>#}
+{#<script src="python.js"></script>#}
+
+
+    <link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+    <script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+    <script src="{% static 'codemirror/addon/edit/matchbrackets.js' %}"></script>
+    <script src="{% static 'codemirror/mode/python/python.js' %}"></script>
+
+
+{##}
+{#<article>#}
+{#<h2>Python mode</h2>#}
+{##}
+{#    <div><textarea id="code" name="code">#}
+{##}
+{#</textarea></div>#}
+
+
+
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("question_input"), {
+        mode: {name: "python",
+               version: 3,
+               singleLineStringErrors: false},
+        lineNumbers: true,
+        indentUnit: 4,
+        matchBrackets: true
+    });
+
+    </script>
+
+
 
 {#    <!-- Menu Section -->#}
 {#    <section id="menu" class="container content-section text-center inside-template">#}
