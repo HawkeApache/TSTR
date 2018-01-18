@@ -24,10 +24,10 @@
                     </div>
                     <div class="modal-body">
                         {% for message in messages %}
-                                {% if forloop.first %}
-                                    {{ message }}
-                                {% endif %}
-                            {% endfor %}
+                            {% if forloop.first %}
+                                {{ message }}
+                            {% endif %}
+                        {% endfor %}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Zamknij</button>
@@ -37,24 +37,16 @@
         </div>
 
 
-
         <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
                 <p class="text-center">
                 <h2>Twoje dane </h2></p>
-                <h4>Login: {{ user.get_username }} </h4>
-                <h4>Imię: {{ user.first_name }} </h4>
-                <h4>Nazwisko: {{ user.last_name }} </h4>
-                <h5>Nr indeksu: {{ index_nr }} </h5>
-                <div class="row">
-                    <div class="col-sm-6">
+                <div class="personal-data">
 
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                    </div>
+                    <h4>Login: {{ user.get_username }} </h4>
+                    <h4>Imię: {{ user.first_name }} </h4>
+                    <h4>Nazwisko: {{ user.last_name }} </h4>
+                    <h5>Nr indeksu: {{ index_nr }} </h5>
                 </div>
             </div><!--/col-sm-6-->
         </div><!--/row-->
@@ -64,7 +56,7 @@
             <div class="col-sm-6 col-sm-offset-3">
                 <p class="text-center">
                 <h2>Zmień hasło </h2> </p>
-                <form method="post">
+                <form method="post" class="password-form">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <input type="submit" class="btn btn-default btn-selected btn-lg" data-loading-text="Zmiana hasła..."
