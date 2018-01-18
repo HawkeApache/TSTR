@@ -64,30 +64,18 @@
         </form>
     </section>
 
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("question_input"), {
+            mode: {
+                name: "python",
+                version: 3,
+                singleLineStringErrors: false
+            },
+            theme: "base16-dark",
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true
+        });
 
-
-{#    <!-- Menu Section -->#}
-{#    <section id="menu" class="container content-section text-center inside-template">#}
-{#        <div class="row">#}
-{#            <div class="col-md-8 col-md-offset-2">#}
-{#                <h1 class="brand-heading">Pytanie</h1>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="row col-lg-12" id="test-options">#}
-{#            {% if next_question_id %}#}
-{#                <a href="/test/{{ test_id }}/{{ next_question_id }}" class="btn btn-default btn-lg test-option">#}
-{#                    <span class="test-name">#}
-{#                        <h3>{{ question.question_text }}</h3>#}
-{#                    </span>#}
-{#                </a>#}
-{#            {% else %}#}
-{#                <a href="" class="btn btn-default btn-lg test-option">#}
-{#                    <span class="test-name">#}
-{#                        <h3>{{ question.question_text }}</h3>#}
-{#                    </span>#}
-{#                </a>#}
-{#                <h3>KONIEC</h3>#}
-{#            {% endif %}#}
-{#        </div>#}
-{#    </section>#}
+    </script>
 {% endblock %}
