@@ -4,6 +4,7 @@ from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 
 
 class CustomizedPasswordChange(PasswordChangeForm):
+    """Translated to polish form to change user password"""
     error_messages = dict(SetPasswordForm.error_messages, **{
         'password_incorrect': ("Stare hasło niepoprawne. "
                                "Spróbuj ponownie."),
