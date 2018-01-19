@@ -477,13 +477,12 @@ body {
 }
 
 .question-option:not(.nohover):hover {
-    background-color:white;
+    background-color: white;
 }
 
 #question-answers {
     margin-top: 15px;
 }
-
 
 .inside-template {
     min-height: 650px;
@@ -493,7 +492,6 @@ body {
     background-color: limegreen;
     color: black;
 }
-
 
 .mymark_incorrect {
     background-color: darkred;
@@ -533,8 +531,10 @@ body {
     margin-top: 5px;
     background-color: #1d1d1d;
     color: white;
-    padding: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
     overflow: hidden;
+    resize: none;
 }
 
 .question-option:hover {
