@@ -237,18 +237,19 @@ def finished(request):
 
 @login_required
 def closed_for_group(request, group_id):
-    tests = Test.objects.filter(teachinggroup=group_id)
     student = User.objects.get(username=request.user.username)
-    test_results = Test.objects.filter(testresult__student=student)
+
+    results = TestResult.objects.all().filter(student=student)
+    results_tests_ids = [x.test_id for x in results]
+
+    tests = Test.objects.all().filter(id__in=results_tests_ids, teachinggroup=group_id)
     current_time = timezone.now()
 
     for t in tests:
-        if t in test_results:
             scores = TestResult.objects.all().get(student=student, test=t)
             t.active = False
             t.score = scores.score
             t.max = scores.max_score
-        else:
             if t.start_time <= current_time <= t.end_time:
                 t.active = True
             else:
