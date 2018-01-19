@@ -24,20 +24,17 @@
                 <div class="col-md-8 col-md-offset-2 ">
                     <div id="question-text-additional">Twoja odpowiedź</div>
                     {% if question.is_correct %}
-                        <textarea class="form-control open_correct" id="question_output_textarea" rows="2" readonly>
-                        {{ question.student_answer }}
-                    </textarea>
+                        <textarea class="form-control open_correct" id="question_output_textarea" rows="2"
+                                  readonly>{{ question.student_answer }}</textarea>
                     {% else %}
-                        <textarea class="form-control open_incorrect" id="question_output_textarea" rows="2" readonly>
-                            {{ question.student_answer }}
-                     </textarea>
+                        <textarea class="form-control open_incorrect" id="question_output_textarea" rows="2"
+                                  readonly>{{ question.student_answer }}</textarea>
                     {% endif %}
                 </div>
-                <div class="col-md-8 col-md-offset-2" >
+                <div class="col-md-8 col-md-offset-2">
                     <div id="question-text-additional">Przykładowa poprawna odpowiedź</div>
-                    <textarea class="form-control" id="question_output_textarea" rows="2" readonly>
-                        {{ question.correct }}
-                    </textarea>
+                    <textarea class="form-control" id="question_output_textarea" rows="2"
+                              readonly>{{ question.correct }}</textarea>
                 </div>
 
             {% else %}
@@ -62,8 +59,7 @@
                         {% else %}
                             <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
                             <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
-                                   autocomplete="off">
-                            {{ a }}
+                                   autocomplete="off">{{ a }}
                         {% endif %}
                     </label>
                     {% endfor %}
