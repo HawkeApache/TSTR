@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Admin panel"""
 import sys
 import django
 
@@ -7,12 +8,17 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from import_export.admin import ImportExportModelAdmin
-from tstr.tstr_app.models import Student, OpenQuestion, Test, TeachingGroup, ClosedQuestion, Answer, TestResult
+from tstr.tstr_app.models import (
+    Student,
+    OpenQuestion, Test, TeachingGroup,
+    ClosedQuestion, Answer, TestResult
+)
 from .resources import StudentResource
 
 
 @admin.register(Student)
 class StudentAdmin(ImportExportModelAdmin):
+    """Import students"""
     resource_class = StudentResource
     list_display = ('index', 'first_name', 'last_name', 'is_active_USOS')
     from_encoding = 'utf-8'
@@ -20,7 +26,8 @@ class StudentAdmin(ImportExportModelAdmin):
     def import_action(self, request, *args, **kwargs):
         '''Action to import students list from csv format'''
 
-        resource = self.get_import_resource_class()(**self.get_import_resource_kwargs(request, *args, **kwargs))
+        resource = self.get_import_resource_class()(
+            **self.get_import_resource_kwargs(request, *args, **kwargs))
         context = self.get_import_context_data()
 
         import_formats = self.get_import_formats()
@@ -35,7 +42,7 @@ class StudentAdmin(ImportExportModelAdmin):
 
             import_file = form.cleaned_data['import_file']
             data = bytes()
-            for chunk in (import_file.chunks()):
+            for chunk in import_file.chunks():
                 data += chunk
 
             tab = data.split(b'\r\n')
@@ -65,7 +72,10 @@ class StudentAdmin(ImportExportModelAdmin):
                 student.is_active_USOS = is_active_usos
                 password = Student.objects.make_random_password(8)
                 student.set_password(password)
-                tmpfile.write((username + " " + first_name + " " + last_name + " " + password + "\n").encode('utf8'))
+                tmpfile.write((username + " "
+                               + first_name + " "
+                               + last_name + " "
+                               + password + "\n").encode('utf8'))
                 student.save()
 
             tmpfile.close()
@@ -87,39 +97,44 @@ class StudentAdmin(ImportExportModelAdmin):
 
 @admin.register(OpenQuestion)
 class OpenQuestionAdmin(admin.ModelAdmin):
+    """Display open questions for admin"""
     list_display = ('id', 'question_text',)
 
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
+    """Display tests for admin"""
     list_display = ('test_name', 'start_time', 'end_time')
 
 
 @admin.register(TeachingGroup)
 class GroupAdmin(admin.ModelAdmin):
+    """Display groups for admin"""
     list_display = ('name',)
 
 
 @admin.register(ClosedQuestion)
 class ClosedQuestionAdmin(admin.ModelAdmin):
+    """Display closed questions for admin"""
     list_display = ('id', 'question_text',)
 
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
+    """Display answers for admin"""
     list_display = ('student', 'test', 'is_correct')
 
 
 def recalculate_test_results(modeladmin, request, queryset):
     """Automatically score answers for closed questions"""
-    for q in queryset:
-        q.score = 0
-        q.save()
-        answers = Answer.objects.all().filter(student=q.student, test=q.test)
+    for query in queryset:
+        query.score = 0
+        query.save()
+        answers = Answer.objects.all().filter(student=query.student, test=query.test)
         for answer in answers:
             if answer.is_correct:
-                q.score = int(q.score) + 1
-                q.save()
+                query.score = int(query.score) + 1
+                query.save()
 
 
 recalculate_test_results.short_description = "Recalculate test result"
@@ -127,5 +142,6 @@ recalculate_test_results.short_description = "Recalculate test result"
 
 @admin.register(TestResult)
 class TestResultAdmin(admin.ModelAdmin):
+    """Display test results and possibility to recalculate it"""
     list_display = ('student', 'test', 'score', 'max_score')
     actions = [recalculate_test_results]

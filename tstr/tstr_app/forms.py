@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Custom form for changing password"""
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 
@@ -12,11 +13,11 @@ class CustomizedPasswordChange(PasswordChangeForm):
 
     })
     old_password = forms.CharField(label=("Stare hasło"),
-                                   widget=forms.PasswordInput(attrs={'class':"input-lg form-control"})
-                                   )
-
+                                   widget=forms.PasswordInput
+                                   (attrs={'class': "input-lg form-control"}))
     new_password1 = forms.CharField(label=("Nowe hasło"),
-                                    widget=forms.PasswordInput(attrs={'class':"input-lg form-control"}))
+                                    widget=forms.PasswordInput
+                                    (attrs={'class': "input-lg form-control"}))
     new_password2 = forms.CharField(label=("Powtórz nowe hasło"),
-                                    widget=forms.PasswordInput(attrs={'class':"input-lg form-control"}))
-
+                                    widget=forms.PasswordInput
+                                    (attrs={'class': "input-lg form-control"}))

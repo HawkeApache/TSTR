@@ -1,4 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
+"""View functions to return web response"""
 import random
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -9,22 +10,28 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 
-from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress, Student, \
-    TeachingGroup, User, OpenQuestion
+from tstr.tstr_app.models import (
+    Question, ClosedQuestion, Test,
+    Answer, TestResult, TestInProgress, Student,
+    TeachingGroup, User
+)
 from tstr.tstr_app.utils import precise_question_type
 from .forms import CustomizedPasswordChange
 
 
 def index(request):
+    """Display main page"""
     return render(request, "home/landing_page.html", {})
 
 
 @login_required
 def menu(request):
+    """Display menu"""
     return render(request, "home/menu.html", {})
 
 
 def login_user(request):
+    """Login user and redirect to menu"""
     errors = []
     if request.method == "POST":
         username = request.POST['username']
@@ -54,6 +61,7 @@ def login_user(request):
 
 @login_required
 def settings(request):
+    """Change password"""
     if not request.user.is_superuser:
         index_nr = Student.objects.get(username=request.user.username).index
     else:
@@ -77,6 +85,7 @@ def settings(request):
 
 @login_required
 def users_groups(request):
+    """Display groups for user"""
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     tests = TestInProgress.objects.all().filter(student=current_student)
@@ -90,27 +99,30 @@ def users_groups(request):
 
 @login_required
 def tests_for_group(reguest, group_id):
+    """Display available tests for user"""
     tests = Test.objects.filter(teachinggroup=group_id)
     student = User.objects.get(username=reguest.user.username)
     test_results = Test.objects.filter(testresult__student=student)
     current_time = timezone.now()
 
-    for t in tests:
-        if t in test_results:
-            t.active = False
+    for test in tests:
+        if test in test_results:
+            test.active = False
         else:
-            if t.start_time <= current_time <= t.end_time:
-                first_question = random.choice(Question.objects.all().filter(test=t))
-                t.first_question = first_question.id
-                t.active = True
+            if test.start_time <= current_time <= test.end_time:
+                first_question = random.choice(Question.objects.all().filter(test=test))
+                test.first_question = first_question.id
+                test.active = True
             else:
-                t.active = False
+                test.active = False
 
-    return render(reguest, "home/tests.html", {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
+    return render(reguest, "home/tests.html",
+                  {"tests": tests, "title": "Testy dostępne dla twojej grupy"})
 
 
 @login_required
 def question(request, test_id, question_id):
+    """Display question in test and save answer"""
     # get necessary information
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
@@ -150,7 +162,8 @@ def question(request, test_id, question_id):
         if "close" in request.POST:
             user_answer = request.POST.get("radio")
             answer.answer = user_answer
-            answer.is_correct = str(user_answer) == str(current_question.closedquestion.correct_answer)
+            answer.is_correct = str(user_answer) == str(current_question.
+                                                        closedquestion.correct_answer)
             answer.save()
 
             nxt = request.POST.get('close')
@@ -170,10 +183,12 @@ def question(request, test_id, question_id):
 
     # get index of current question and number of all questions
     number_of_questions = Test.objects.get(id=test_id).questions.all().count()
-    index_of_current_question = Answer.objects.all().filter(test=current_test, student=current_student).count() + 1
+    index_of_current_question = Answer.objects.all().filter(test=current_test,
+                                                            student=current_student).count() + 1
 
     # get current question
-    current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=question_id))
+    current_question = precise_question_type(Test.objects.
+                                             get(id=test_id).questions.get(id=question_id))
 
     # get next question id randomly
     all_answers = Answer.objects.all().filter(test=current_test, student=current_student)
@@ -181,13 +196,15 @@ def question(request, test_id, question_id):
     questions_ids.append(question_id)
 
     try:
-        available_questions = Test.objects.get(id=test_id).questions.all().exclude(id__in=questions_ids)
+        available_questions = Test.objects.get(id=test_id).\
+                                        questions.all().exclude(id__in=questions_ids)
         next_question = random.choice(available_questions)
     except IndexError:
         next_question = ""
 
     # save current test state
-    in_progress, created = TestInProgress.objects.get_or_create(student=current_student, test=current_test)
+    in_progress, created = TestInProgress.objects.get_or_create(student=current_student,
+                                                                test=current_test)
     in_progress.question = current_question
     in_progress.save()
 
@@ -207,11 +224,13 @@ def question(request, test_id, question_id):
 
 
 def end(request):
+    """Display information about finishing test"""
     return render(request, "home/end.html", {})
 
 
 @login_required
 def begin_tests(request):
+    """Start test for user"""
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
 
@@ -221,15 +240,18 @@ def begin_tests(request):
 
 
 def error404(request):
+    """Display 404 error"""
     return render(request, "home/404.html", {})
 
 
 def error500(request):
+    """Display 505 error"""
     return render(request, "home/500.html", {})
 
 
 @login_required
 def finished(request):
+    """Display groups for user"""
     student_username = request.user.username
     group = TeachingGroup.objects.filter(student__username=student_username)
     return render(request, "home/groups_fin.html", {"groups": group, "title": "Twoje grupy"})
@@ -237,6 +259,7 @@ def finished(request):
 
 @login_required
 def closed_for_group(request, group_id):
+    """Display tests finished by user with score"""
     student = User.objects.get(username=request.user.username)
 
     results = TestResult.objects.all().filter(student=student)
@@ -245,23 +268,23 @@ def closed_for_group(request, group_id):
     tests = Test.objects.all().filter(id__in=results_tests_ids, teachinggroup=group_id)
     current_time = timezone.now()
 
-    for t in tests:
-            scores = TestResult.objects.all().get(student=student, test=t)
-            t.active = False
-            t.score = scores.score
-            t.max = scores.max_score
-            if t.start_time <= current_time <= t.end_time:
-                t.active = True
-            else:
-                t.active = False
+    for test in tests:
+        scores = TestResult.objects.all().get(student=student, test=test)
+        test.active = False
+        test.score = scores.score
+        test.max = scores.max_score
+        if test.start_time <= current_time <= test.end_time:
+            test.active = True
+        else:
+            test.active = False
 
     return render(request, "home/finished_tests.html", {"tests": tests,
-                                                        "title": "Zakończone testy twojej grupy"
-                                                        })
+                                                        "title": "Zakończone testy twojej grupy"})
 
 
 @login_required
 def result(request, test_id):
+    """Display test with marked student answers and correct answers"""
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     current_test = Test.objects.get(id=test_id)
@@ -271,23 +294,23 @@ def result(request, test_id):
     results = TestResult.objects.get(student=current_student, test=test_id)
     number_of_questions = Test.objects.get(id=test_id).questions.all().count()
 
-    for q in questions_in_test:
-        current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=q.id))
-        q.type_of_q = str(current_question.__class__.__name__)
-        if q.type_of_q == "ClosedQuestion":
-            q.all_answers = current_question.answers.split("&")
-            q.correct = int(current_question.correct_answer)
-            q.student_answer = int(answers_all.get(question=q.id).answer)
+    for quest in questions_in_test:
+        current_question = precise_question_type(Test.objects.get(id=test_id)
+                                                 .questions.get(id=quest.id))
+        quest.type_of_q = str(current_question.__class__.__name__)
+        if quest.type_of_q == "ClosedQuestion":
+            quest.all_answers = current_question.answers.split("&")
+            quest.correct = int(current_question.correct_answer)
+            quest.student_answer = int(answers_all.get(question=quest.id).answer)
 
         else:
-            q.correct = current_question.correct_answer
-            q.student_answer = answers_all.get(question=q.id).answer
-            q.is_correct = answers_all.get(question=q.id).is_correct
+            quest.correct = current_question.correct_answer
+            quest.student_answer = answers_all.get(question=quest.id).answer
+            quest.is_correct = answers_all.get(question=quest.id).is_correct
 
     return render(request, "home/result.html",
                   {"test_name": test_name,
                    "test": questions_in_test,
                    "score": results.score,
                    "max_score": results.max_score,
-                   "all": number_of_questions,
-                   })
+                   "all": number_of_questions, })
