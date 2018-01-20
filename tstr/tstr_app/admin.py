@@ -18,12 +18,7 @@ class StudentAdmin(ImportExportModelAdmin):
     from_encoding = 'utf-8'
 
     def import_action(self, request, *args, **kwargs):
-        '''
-        Perform a dry_run of the import to make sure the import will not
-        result in errors.  If there where no error, save the user
-        uploaded file to a local temp file that will be used by
-        'process_import' for the actual import.
-        '''
+        '''Action to import students list from csv format'''
 
         resource = self.get_import_resource_class()(**self.get_import_resource_kwargs(request, *args, **kwargs))
         context = self.get_import_context_data()
@@ -116,6 +111,7 @@ class AnswerAdmin(admin.ModelAdmin):
 
 
 def recalculate_test_results(modeladmin, request, queryset):
+    """Automatically score answers for closed questions"""
     for q in queryset:
         q.score = 0
         q.save()

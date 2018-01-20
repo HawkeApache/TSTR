@@ -8,7 +8,9 @@ from tstr.tstr_app.models import *
 
 
 class QuestionTestCase(TestCase):
+    """Tests to model object - question"""
     def setUp(self):
+        """Set up objects to tests"""
         Question.objects.create(question_text="test question text", difficulty=8)
         Question.objects.create(question_text="test question text2")
 
@@ -35,7 +37,9 @@ class QuestionTestCase(TestCase):
 
 
 class OpenQuestionTestCase(TestCase):
+    """Tests to model object - openquestion"""
     def setUp(self):
+        """Set up objects to tests"""
         OpenQuestion.objects.create(question_text="test open question text", difficulty=8)
         OpenQuestion.objects.create(question_text="test open question text2")
 
@@ -48,7 +52,9 @@ class OpenQuestionTestCase(TestCase):
 
 
 class ClosedQuestionTestCase(TestCase):
+    """Tests to model object - closedquestion"""
     def setUp(self):
+        """Set up objects to tests"""
         ClosedQuestion.objects.create(question_text="test closed question text", difficulty=8, correct_answer=1)
         ClosedQuestion.objects.create(question_text="test closed question text2", correct_answer=0)
 
@@ -69,19 +75,21 @@ class ClosedQuestionTestCase(TestCase):
 
 
 class TestTestCase(TestCase):
+    """Tests to model object - test"""
     def setUp(self):
+        """Set up objects to tests"""
         Test.objects.create(test_name="test", start_time=datetime.now(), end_time=datetime.now())
         Test.objects.create(test_name="test 2", start_time=datetime.now(), end_time=datetime.now())
 
     def test_test_str(self):
-        "Str function should return test name"
+        """Str function should return test name"""
         first = Test.objects.get(test_name="test")
         second = Test.objects.get(test_name="test 2")
         self.assertEqual(str(first), "test")
         self.assertEqual(str(second), "test 2")
 
     def test_test_start_time(self):
-        "Start_time field cannot be empty"
+        """Start_time field cannot be empty"""
         try:
             Test.objects.create(test_name="test", end_time=datetime.now())
             self.fail("Test cannot be created with empty start_time field")
@@ -89,7 +97,7 @@ class TestTestCase(TestCase):
             pass
 
     def test_test_end_time(self):
-        "End_time field cannot be empty"
+        """End_time field cannot be empty"""
         try:
             Test.objects.create(test_name="test", start_time=datetime.now())
             self.fail("Test cannot be created with empty end_time field")
@@ -98,7 +106,9 @@ class TestTestCase(TestCase):
 
 
 class StudentTestCase(TestCase):
+    """Tests to model object - Student"""
     def setUp(self):
+        """Set up objects to tests"""
         Student.objects.create(index="123", first_name="test", last_name="test", username="abc")
         Student.objects.create(index="234", first_name="test", last_name="test", is_active_USOS=False, username="abc1")
 
@@ -140,7 +150,9 @@ class StudentTestCase(TestCase):
 
 
 class TeachingGroupTestCase(TestCase):
+    """Tests to model object - teaching group"""
     def setUp(self):
+        """Set up objects to tests"""
         TeachingGroup.objects.create(name="group1")
 
     def test_teachinggroup_str(self):
