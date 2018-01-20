@@ -38,7 +38,7 @@
                 </div>
 
             {% else %}
-                <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 btn-group" id="question-answers"
+                <div class="col-lg-8 col-md-8 col-sm-12 col-lg-offset-2  col-md-offset-2 btn-group" id="question-answers"
                      data-toggle="buttons">
                     {% for a in question.all_answers %}
                         {% if forloop.counter0 == question.student_answer and forloop.counter0 == question.correct %}

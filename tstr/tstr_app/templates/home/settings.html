@@ -13,7 +13,7 @@
              aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="mymodal-body">
-                    <div class="modal-header">
+                    <div class="modal-body">
                         <h5 class="modal-title" id="exampleModalLongTitle">
                             {% for message in messages %}
                                 {% if forloop.first %}
@@ -21,17 +21,16 @@
                                 {% endif %}
                             {% endfor %}
                         </h5>
-                    </div>
-                    <div class="modal-body">
+                        <br>
                         {% for message in messages %}
                             {% if forloop.first %}
                                 {{ message }}
                             {% endif %}
-                        {% endfor %}
-                    </div>
-                    <div class="modal-footer">
+                        {% endfor %}<br>
                         <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Zamknij</button>
                     </div>
+
+
                 </div>
             </div>
         </div>
