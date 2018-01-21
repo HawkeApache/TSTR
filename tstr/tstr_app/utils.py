@@ -1,4 +1,4 @@
-"""Utils module"""
+"""Helper functions"""
 
 
 def precise_question_type(question):

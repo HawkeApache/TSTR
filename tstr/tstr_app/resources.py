@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+"""Classes to custom views in admin panel"""
 from import_export import resources
-from .models import Student
 from import_export.fields import Field
+from .models import Student
 
 
 class StudentResource(resources.ModelResource):

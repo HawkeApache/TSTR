@@ -1,10 +1,9 @@
+"""Tests for models in application"""
 from datetime import datetime
 
 from django.test import TestCase
 
-from tstr.tstr_app.forms import CustomizedPasswordChange
 from tstr.tstr_app.models import *
-
 
 
 class QuestionTestCase(TestCase):
@@ -14,7 +13,7 @@ class QuestionTestCase(TestCase):
         Question.objects.create(question_text="test question text", difficulty=8)
         Question.objects.create(question_text="test question text2")
 
-    def test_question_default_difficulty(self):
+    def test_question_difficulty(self):
         """Difficulty or default value should be correctly set"""
         first = Question.objects.get(question_text="test question text")
         second = Question.objects.get(question_text="test question text2")
@@ -55,7 +54,8 @@ class ClosedQuestionTestCase(TestCase):
     """Tests to model object - closedquestion"""
     def setUp(self):
         """Set up objects to tests"""
-        ClosedQuestion.objects.create(question_text="test closed question text", difficulty=8, correct_answer=1)
+        ClosedQuestion.objects.create(question_text=
+                                      "test closed question text", difficulty=8, correct_answer=1)
         ClosedQuestion.objects.create(question_text="test closed question text2", correct_answer=0)
 
     def test_closed_question_str(self):
@@ -65,7 +65,7 @@ class ClosedQuestionTestCase(TestCase):
         self.assertEqual(str(first), "ClosedQuestion test closed question text")
         self.assertEqual(str(second), "ClosedQuestion test closed question text2")
 
-    def test_closed_question_correct_answer(self):
+    def test_closed_question_cor_answer(self):
         """ClosedQuestion object cannot be created with empty correct_answer field"""
         try:
             ClosedQuestion.objects.create(question_text="uncorrect")
@@ -110,14 +110,15 @@ class StudentTestCase(TestCase):
     def setUp(self):
         """Set up objects to tests"""
         Student.objects.create(index="123", first_name="test", last_name="test", username="abc")
-        Student.objects.create(index="234", first_name="test", last_name="test", is_active_USOS=False, username="abc1")
+        Student.objects.create(index="234", first_name="test",
+                               last_name="test", is_active_USOS=False, username="abc1")
 
     def test_student_test_str(self):
         """Str function should return index + first_name + last_name of student"""
         student = Student.objects.get(index="123")
         self.assertEqual(str(student), "123 test test")
 
-    def test_student_index_cannot_be_empty(self):
+    def test_student_index_must_be(self):
         """Index field cannot be empty"""
         try:
             Student.objects.create(first_name="test", last_name="test")
@@ -132,18 +133,20 @@ class StudentTestCase(TestCase):
         self.assertEqual(student.is_active_USOS, True)
         self.assertEqual(student2.is_active_USOS, False)
 
-    def test_student_index_must_be_unique(self):
+    def test_student_index_unique(self):
         """Index field in student object must be unique"""
         try:
-            Student.objects.create(index="123", first_name="test", last_name="test", username="abc3")
+            Student.objects.create(index="123", first_name="test",
+                                   last_name="test", username="abc3")
             self.fail("Student cannot be created with non unique index field")
         except Exception:
             pass
 
-    def test_student_username_must_be_unique(self):
+    def test_student_username_unique(self):
         """Username field in student object must be unique"""
         try:
-            Student.objects.create(index="1233", first_name="test", last_name="test", username="abc")
+            Student.objects.create(index="1233", first_name="test",
+                                   last_name="test", username="abc")
             self.fail("Student cannot be created with non unique username field")
         except Exception:
             pass
@@ -159,4 +162,3 @@ class TeachingGroupTestCase(TestCase):
         """Str function should return group name"""
         first = TeachingGroup.objects.get(name="group1")
         self.assertEqual(str(first), "group1")
-

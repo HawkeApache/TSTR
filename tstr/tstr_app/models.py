@@ -1,5 +1,4 @@
-"""Django models"""
-
+"""Models used in application"""
 import uuid
 
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -11,8 +10,8 @@ class Question(models.Model):
     """Parent type for open and closed questions"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     question_text = models.TextField()
-    difficulty = models.IntegerField(default=10, validators=[MaxValueValidator(10),
-                                                             MinValueValidator(1)])
+    difficulty = models.IntegerField(default=10,
+                                     validators=[MaxValueValidator(10), MinValueValidator(1)])
 
     def __str__(self):
         """Override str function to return question text"""
@@ -45,9 +44,10 @@ class ClosedQuestion(Question):
 
 
 class Test(models.Model):
-    """Collection of questions - with additional parameters like start_time, end_time,
-     id and test_name"""
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    """Collection of questions -
+    with additional parameters like start_time, end_time, id and test_name"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                          editable=False, unique=True)
     test_name = models.CharField(max_length=255)
     questions = models.ManyToManyField(Question)
     start_time = models.DateTimeField()
