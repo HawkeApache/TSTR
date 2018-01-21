@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from tstr.tstr_app import views
 from django.contrib.auth import views as auth_views
+from tstr.tstr_app import views
+
 
 urlpatterns = [
     url(r'^$', views.login_user, name='login'),
@@ -35,5 +36,5 @@ urlpatterns = [
     url(r'^result/(?P<test_id>[0-9a-f-]+)', views.result, name='result')
 ]
 
-handler404 = views.error404
-handler500 = views.error500
+HANDLER404 = views.error404
+HANDLER500 = views.error500

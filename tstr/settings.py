@@ -131,6 +131,6 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static_build'
-DEFAULT_CHARSET='utf-8'
-LOGIN_URL='/#login'
+DEFAULT_CHARSET = 'utf-8'
+LOGIN_URL = '/#login'
 LOGIN_REDIRECT_URL = '/'
