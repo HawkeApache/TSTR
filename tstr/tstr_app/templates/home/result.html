@@ -27,12 +27,12 @@
                     {% else %}
                         <div id="question-text-additional">Twoja odpowiedź (Niepoprawna)</div>
                     {% endif %}
-                    <textarea class="form-control open_correct nowa" id="question_output_textarea"
+                    <textarea class="form-control open_correct code" id="question_output_textarea"
                               readonly>{{ question.student_answer }}</textarea>
                 </div>
                 <div class="col-md-8 col-md-offset-2">
                     <div id="question-text-additional">Przykładowa poprawna odpowiedź</div>
-                    <textarea class="form-control nowa" id="question_output_textarea"
+                    <textarea class="form-control code" id="question_output_textarea"
                               readonly>{{ question.correct }}</textarea>
                 </div>
 
@@ -72,7 +72,7 @@
             return Array.apply(null, document.querySelectorAll(sel));
         }
 
-        qsa(".nowa").forEach(function (editorEl) {
+        qsa(".code").forEach(function (editorEl) {
             CodeMirror.fromTextArea(editorEl, {
                 mode: {
                 name: "python",

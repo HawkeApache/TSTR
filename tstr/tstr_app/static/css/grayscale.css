@@ -561,3 +561,8 @@ body {
 .CodeMirror-gutters {
     border-right: 1px solid #42DCA3 !important;
 }
+
+#timer {
+    text-align: right;
+    margin-bottom: 25px;
+}

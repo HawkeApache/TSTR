@@ -1,5 +1,4 @@
 """Helper functions"""
-from tstr.tstr_app.models import *
 
 
 def precise_question_type(question):

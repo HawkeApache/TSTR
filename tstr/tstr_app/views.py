@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 from tstr.tstr_app.models import (
     Question, ClosedQuestion, Test,
@@ -89,7 +90,13 @@ def users_groups(request):
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     tests = TestInProgress.objects.all().filter(student=current_student)
-    if tests:
+
+    active_test = []
+    for t in tests:
+        if t.test.end_time > timezone.now():
+            active_test.append(t)
+
+    if active_test:
         return begin_tests(request)
 
     student_username = request.user.username
@@ -109,7 +116,7 @@ def tests_for_group(reguest, group_id):
         if test in test_results:
             test.active = False
         else:
-            if test.start_time <= current_time <= test.end_time:
+            if test.start_time <= current_time < test.end_time:
                 first_question = random.choice(Question.objects.all().filter(test=test))
                 test.first_question = first_question.id
                 test.active = True
@@ -161,7 +168,11 @@ def question(request, test_id, question_id):
 
         if "close" in request.POST:
             user_answer = request.POST.get("radio")
-            answer.answer = user_answer
+            if not user_answer:
+                answer.answer = ""
+            else:
+                answer.answer = user_answer
+
             answer.is_correct = str(user_answer) == str(current_question.
                                                         closedquestion.correct_answer)
             answer.save()
@@ -220,7 +231,8 @@ def question(request, test_id, question_id):
                    "answers": answers,
                    "question_type": str(current_question.__class__.__name__),
                    "next_question_id": next_question if not next_question else next_question.id,
-                   "test_id": test_id})
+                   "test_id": test_id,
+                   "end_time": current_test.end_time})
 
 
 def end(request):
@@ -235,8 +247,12 @@ def begin_tests(request):
     current_student = User.objects.get(username=current_user).student
 
     tests = TestInProgress.objects.all().filter(student=current_student)
+    active_test = []
+    for t in tests:
+        if t.test.end_time > timezone.now():
+            active_test.append(t)
 
-    return render(request, "home/begin_tests.html", {"tests": tests})
+    return render(request, "home/begin_tests.html", {"tests": active_test})
 
 
 def error404(request):
@@ -269,14 +285,14 @@ def closed_for_group(request, group_id):
     current_time = timezone.now()
 
     for test in tests:
-        scores = TestResult.objects.all().get(student=student, test=test)
-        test.active = False
-        test.score = scores.score
-        test.max = scores.max_score
-        if test.start_time <= current_time <= test.end_time:
-            test.active = True
-        else:
+            scores = TestResult.objects.all().get(student=student, test=test)
             test.active = False
+            test.score = scores.score
+            test.max = scores.max_score
+            if test.start_time <= current_time <= test.end_time:
+                test.active = True
+            else:
+                test.active = False
 
     return render(request, "home/finished_tests.html", {"tests": tests,
                                                         "title": "Zakończone testy twojej grupy"})
@@ -294,19 +310,25 @@ def result(request, test_id):
     results = TestResult.objects.get(student=current_student, test=test_id)
     number_of_questions = Test.objects.get(id=test_id).questions.all().count()
 
-    for quest in questions_in_test:
-        current_question = precise_question_type(Test.objects.get(id=test_id)
-                                                 .questions.get(id=quest.id))
-        quest.type_of_q = str(current_question.__class__.__name__)
-        if quest.type_of_q == "ClosedQuestion":
-            quest.all_answers = current_question.answers.split("&")
-            quest.correct = int(current_question.correct_answer)
-            quest.student_answer = int(answers_all.get(question=quest.id).answer)
+    for q in questions_in_test:
+        current_question = precise_question_type(Test.objects.get(id=test_id).questions.get(id=q.id))
+        q.type_of_q = str(current_question.__class__.__name__)
+        if q.type_of_q == "ClosedQuestion":
+            q.all_answers = current_question.answers.split("&")
+            q.correct = int(current_question.correct_answer)
+            try:
+                q.student_answer = int(answers_all.get(question=q.id).answer)
+            except Exception:
+                q.student_answer = ""
 
         else:
-            quest.correct = current_question.correct_answer
-            quest.student_answer = answers_all.get(question=quest.id).answer
-            quest.is_correct = answers_all.get(question=quest.id).is_correct
+            q.correct = current_question.correct_answer
+            try:
+                q.student_answer = answers_all.get(question=q.id).answer
+                q.is_correct = answers_all.get(question=q.id).is_correct
+            except ObjectDoesNotExist:
+                q.student_answer = "#Nie udzieliłeś odpowiedzi na to pytanie"
+                q.is_correct = False
 
     return render(request, "home/result.html",
                   {"test_name": test_name,

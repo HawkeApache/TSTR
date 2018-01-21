@@ -5,9 +5,36 @@
 {% endblock %}
 {% block content %}
 
+
+    <!-- Modal -->
+        <div class="modal fade" id="myModal2" tabindex="-100" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="mymodal-body">
+                    <div class="modal-body">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            KONIEC CZASU
+                        </h5>
+                        <br>
+                            Dokończ odpowiedź na pytanie i zakończ test
+                        <br>
+                        <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Zamknij</button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
     <!-- Open Question -->
 
     <section id="quesion" class="container content-section text-center inside-template">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-md-offset-2 col-sm-10 col-xs-10 col-sm-offset-2" id="timer"></div>
+        </div>
+
+
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <h1 class="brand-heading">Pytanie {{ number }} z {{ all }}</h1>
@@ -23,15 +50,18 @@
                 </label>
 
                 <div class="col-md-8 col-md-offset-2" id="question-input">
-                <textarea name="question_input" class="form-control" id="question_input" rows="8"></textarea>
+                    <textarea name="question_input" class="form-control" id="question_input" rows="8"></textarea>
                 </div>
 
                 <div class="col-md-8 col-md-offset-2" id="question-button">
                     <div class="col-lg-8 col-md-8"></div>
                     {% if next_question_id %}
-                        <button name="open" type="submit" value="{{ next_question_id }}" class="btn btn-default col-lg-4">Dalej</button>
+                        <button name="open" type="submit" value="{{ next_question_id }}"
+                                class="btn btn-default col-lg-4">Dalej
+                        </button>
                     {% else %}
-                        <button name="open" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test</button>
+                        <button name="open" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test
+                        </button>
                     {% endif %}
                 </div>
 
@@ -46,7 +76,8 @@
 
                     {% for a in answers %}
                         <label class="btn btn-default col-lg-12 col-md-12 col-sm-12 question-option">
-                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1" autocomplete="off"> {{ a }}
+                            <input type="radio" name="radio" value="{{ forloop.counter0 }}" id="option1"
+                                   autocomplete="off"> {{ a }}
                         </label>
                     {% endfor %}
                 </div>
@@ -54,9 +85,12 @@
                 <div class="col-md-8 col-md-offset-2" id="question-button">
                     <div class="col-lg-8 col-md-8"></div>
                     {% if next_question_id %}
-                        <button name="close" type="submit" value="{{ next_question_id }}" class="btn btn-default col-lg-4">Dalej</button>
+                        <button name="close" type="submit" value="{{ next_question_id }}"
+                                class="btn btn-default col-lg-4">Dalej
+                        </button>
                     {% else %}
-                        <button name="close" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test</button>
+                        <button name="close" type="submit" value="" class="btn btn-default col-lg-4">Zakończ test
+                        </button>
                     {% endif %}
                 </div>
 
@@ -65,17 +99,28 @@
     </section>
 
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("question_input"), {
-            mode: {
-                name: "python",
-                version: 3,
-                singleLineStringErrors: false
-            },
-            theme: "base16-dark",
-            lineNumbers: true,
-            indentUnit: 4,
-            matchBrackets: true
-        });
+        var question_input = document.getElementById("question_input");
+        if (question_input !== null) {
+            CodeMirror.fromTextArea(question_input, {
+                mode: {
+                    name: "python",
+                    version: 3,
+                    singleLineStringErrors: false
+                },
+                theme: "base16-dark",
+                lineNumbers: true,
+                indentUnit: 4,
+                matchBrackets: true
+            });
+        }
+
+        $("#timer").countdown('{{ end_time|date:"Y/m/d H:i:s" }}')
+            .on('update.countdown', function (event) {
+                $(this).text(event.strftime('Do końca: %d dni %H:%M:%S'));
+            })
+            .on('finish.countdown', function (event) {
+                 $('#myModal2').modal('show');
+            });
 
     </script>
 {% endblock %}
