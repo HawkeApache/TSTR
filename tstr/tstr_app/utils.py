@@ -1,12 +1,12 @@
-from tstr.tstr_app.models import *
+"""Utils module"""
 
 
-def precise_question_type(q):
+def precise_question_type(question):
     """Check type of question - open or closed"""
     try:
-        return q.openquestion
+        return question.openquestion
     except AttributeError:
         try:
-            return q.closedquestion
+            return question.closedquestion
         except AttributeError:
             print("Attribute error in precise question type")

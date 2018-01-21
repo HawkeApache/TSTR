@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 from tstr.tstr_app.models import Question, ClosedQuestion, Test, Answer, TestResult, TestInProgress, Student, \
     TeachingGroup, User, OpenQuestion
@@ -155,7 +156,11 @@ def question(request, test_id, question_id):
 
         if "close" in request.POST:
             user_answer = request.POST.get("radio")
-            answer.answer = user_answer
+            if not user_answer:
+                answer.answer = ""
+            else:
+                answer.answer = user_answer
+
             answer.is_correct = str(user_answer) == str(current_question.closedquestion.correct_answer)
             answer.save()
 
@@ -257,14 +262,14 @@ def closed_for_group(request, group_id):
     current_time = timezone.now()
 
     for t in tests:
-            scores = TestResult.objects.all().get(student=student, test=t)
+        scores = TestResult.objects.all().get(student=student, test=t)
+        t.active = False
+        t.score = scores.score
+        t.max = scores.max_score
+        if t.start_time <= current_time <= t.end_time:
+            t.active = True
+        else:
             t.active = False
-            t.score = scores.score
-            t.max = scores.max_score
-            if t.start_time <= current_time <= t.end_time:
-                t.active = True
-            else:
-                t.active = False
 
     return render(request, "home/finished_tests.html", {"tests": tests,
                                                         "title": "Zakończone testy twojej grupy"
@@ -288,12 +293,19 @@ def result(request, test_id):
         if q.type_of_q == "ClosedQuestion":
             q.all_answers = current_question.answers.split("&")
             q.correct = int(current_question.correct_answer)
-            q.student_answer = int(answers_all.get(question=q.id).answer)
+            try:
+                q.student_answer = int(answers_all.get(question=q.id).answer)
+            except Exception:
+                q.student_answer = ""
 
         else:
             q.correct = current_question.correct_answer
-            q.student_answer = answers_all.get(question=q.id).answer
-            q.is_correct = answers_all.get(question=q.id).is_correct
+            try:
+                q.student_answer = answers_all.get(question=q.id).answer
+                q.is_correct = answers_all.get(question=q.id).is_correct
+            except ObjectDoesNotExist:
+                q.student_answer = "#Nie udzieliłeś odpowiedzi na to pytanie"
+                q.is_correct = False
 
     return render(request, "home/result.html",
                   {"test_name": test_name,
