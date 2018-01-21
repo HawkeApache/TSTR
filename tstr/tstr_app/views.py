@@ -80,7 +80,13 @@ def users_groups(request):
     current_user = request.user.username
     current_student = User.objects.get(username=current_user).student
     tests = TestInProgress.objects.all().filter(student=current_student)
-    if tests:
+
+    active_test = []
+    for t in tests:
+        if t.test.end_time > timezone.now():
+            active_test.append(t)
+
+    if active_test:
         return begin_tests(request)
 
     student_username = request.user.username
@@ -99,7 +105,7 @@ def tests_for_group(reguest, group_id):
         if t in test_results:
             t.active = False
         else:
-            if t.start_time <= current_time <= t.end_time:
+            if t.start_time <= current_time < t.end_time:
                 first_question = random.choice(Question.objects.all().filter(test=t))
                 t.first_question = first_question.id
                 t.active = True
@@ -203,7 +209,8 @@ def question(request, test_id, question_id):
                    "answers": answers,
                    "question_type": str(current_question.__class__.__name__),
                    "next_question_id": next_question if not next_question else next_question.id,
-                   "test_id": test_id})
+                   "test_id": test_id,
+                   "end_time": current_test.end_time})
 
 
 def end(request):
@@ -216,8 +223,12 @@ def begin_tests(request):
     current_student = User.objects.get(username=current_user).student
 
     tests = TestInProgress.objects.all().filter(student=current_student)
+    active_test = []
+    for t in tests:
+        if t.test.end_time > timezone.now():
+            active_test.append(t)
 
-    return render(request, "home/begin_tests.html", {"tests": tests})
+    return render(request, "home/begin_tests.html", {"tests": active_test})
 
 
 def error404(request):
